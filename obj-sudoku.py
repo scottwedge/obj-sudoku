@@ -26,7 +26,13 @@ class Spot():
         self.known = known
         
 
+class Puzzle():
+    def __init__(self):
+        self.num_spots = 81  # For default 9x9 puzzle
+        self.full_side = int(self.num_spots ** 0.5)
 
+
+def main():
     initial_puzzle = [7,4,5,0,9,0,0,0,0,\
                       0,3,2,1,5,0,0,4,6,\
                       0,0,0,2,8,0,5,0,3,\
@@ -38,7 +44,6 @@ class Spot():
                       0,6,0,9,0,8,0,3,4]
 
 
-def main():
     first = Spot(1)
     
     val = first.get_con()
@@ -46,6 +51,10 @@ def main():
 
     for j in first.get_con():
         print(j)
+
+    p = Puzzle()
+    print(p.num_spots)
+    print(p.full_side)
 
 
 if __name__ == "__main__":
