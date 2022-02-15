@@ -28,6 +28,14 @@ class UnknownSpot():  # Make this parent = UnknownSpot; child = KnownSpot
         self.column = num % FULL_SIDE  # Calculate value using modulo '%' operation
                                        # so spots 0,9..72 in column 0 ... spots 8,17..80 in column 8
                                        # This has the following column numbering: 012345678
+                                       #                                          012345678
+                                       #                                          012345678
+                                       #                                          012345678
+                                       #                                          012345678
+                                       #                                          012345678
+                                       #                                          012345678
+                                       #                                          012345678
+                                       #                                          012345678
             
         self.grid = num // 27 * 3 + num // 3 % 3  # This results in the following grid numbering: 
                                                   #                                000111222
@@ -64,10 +72,11 @@ class KnownSpot(UnknownSpot):  # Spot whose single value is known
         self.known = True
 
 
-class Puzzle():
+class Puzzle(KnownSpot, UnknownSpot):
     def __init__(self):
-        self.num_spots = 81  # For default 9x9 puzzle
-        self.full_side = int(self.num_spots ** 0.5)
+        self.num_spots = NUM_SPOTS  # For default 9x9 puzzle
+        self.full_side = FULL_SIDE  # For default 9x9 puzzle
+        self.state = "Init"
 
 
 def main():
