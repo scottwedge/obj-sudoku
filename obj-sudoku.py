@@ -12,14 +12,34 @@ class UnknownSpot():  # Make this parent = UnknownSpot; child = KnownSpot
         self.num = num  # Value of 0 through 80
         self.contents = [1,2,3,4,5,6,7,8,9]  # Initialize to all possible values 
         self.known = False  # Toggle to 'True' when contents reaches one value
-        self.grid = -1 # Initialize invalid value
 
         self.row = num // FULL_SIDE  # Calculate value using floor division '//' operation
                                      # so spots 0-8 in row 0 ... spots 72-80 in row 8
+                                     # This results in the following row numbering:  000000000
+                                     #                                               111111111
+                                     #                                               222222222 
+                                     #                                               333333333 
+                                     #                                               444444444 
+                                     #                                               555555555 
+                                     #                                               666666666 
+                                     #                                               777777777 
+                                     #                                               888888888 
 
         self.column = num % FULL_SIDE  # Calculate value using modulo '%' operation
-                                        # so spots 0,9..72 in column 0 ... spots 8,17..80 in column 8
+                                       # so spots 0,9..72 in column 0 ... spots 8,17..80 in column 8
+                                       # This has the following column numbering: 012345678
             
+        self.grid = num // 27 * 3 + num // 3 % 3  # This results in the following grid numbering: 
+                                                  #                                000111222
+                                                  #                                000111222
+                                                  #                                000111222
+                                                  #                                333444555
+                                                  #                                333444555
+                                                  #                                333444555
+                                                  #                                666777888
+                                                  #                                666777888
+                                                  #                                666777888
+                                                                     
             
     def get_con(self):
         return self.contents
