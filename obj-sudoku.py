@@ -4,11 +4,12 @@
 # Assume 9x9 puzzle 
 
 
-class Spot():
+class UnknownSpot():  # Make this parent = UnknownSpot; child = KnownSpot 
     def __init__(self, num):
-        self.num = num
-        self.contents = [1,2,3,4,5,6,7,8,9]
-        self.known = False
+        pass
+        self.num = num  # Value of 0 through 80
+        self.contents = [1,2,3,4,5,6,7,8,9]  # Initialize to all possible values 
+        self.known = False  # Toggle to 'True' when contents reaches one value
 
     def get_con(self):
         return self.contents
@@ -25,6 +26,13 @@ class Spot():
     def set_known(self, known):
         self.known = known
         
+
+class KnownSpot(UnknownSpot):  # Spot whose single value is known
+    def __init__(self, num, contents):
+        self.num = num  
+        self.contents = contents
+        self.known = True
+
 
 class Puzzle():
     def __init__(self):
@@ -44,17 +52,20 @@ def main():
                       0,6,0,9,0,8,0,3,4]
 
 
-    first = Spot(1)
+    first = UnknownSpot(0)
+    second = KnownSpot(1, 7)
     
     val = first.get_con()
-    print(val) 
+    print("Contents of spot {} are {}.".format(first.num, val)) 
+    print("Contents of spot {} are {}.".format(second.num, second.contents)) 
+   
 
     for j in first.get_con():
         print(j)
 
     p = Puzzle()
-    print(p.num_spots)
-    print(p.full_side)
+    print("Number of spots in puzzle is {}".format(p.num_spots))
+    print("Length of puzzle side is {}.".format(p.full_side))
 
 
 if __name__ == "__main__":
