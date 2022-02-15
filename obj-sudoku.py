@@ -3,14 +3,24 @@
 # Sudoku puzzle written in object oriented Python
 # Assume 9x9 puzzle 
 
+# Global constants
+NUM_SPOTS = 81  # Number of spots in a 9x9 grid
+FULL_SIDE = int(NUM_SPOTS ** 0.5)  # Length and number of row(s), column(s) and internal grids
 
 class UnknownSpot():  # Make this parent = UnknownSpot; child = KnownSpot 
     def __init__(self, num):
-        pass
         self.num = num  # Value of 0 through 80
         self.contents = [1,2,3,4,5,6,7,8,9]  # Initialize to all possible values 
         self.known = False  # Toggle to 'True' when contents reaches one value
+        self.grid = -1 # Initialize invalid value
 
+        self.row = num // FULL_SIDE  # Calculate value using floor division '//' operation
+                                     # so spots 0-8 in row 0 ... spots 72-80 in row 8
+
+        self.column = num % FULL_SIDE  # Calculate value using modulo '%' operation
+                                        # so spots 0,9..72 in column 0 ... spots 8,17..80 in column 8
+            
+            
     def get_con(self):
         return self.contents
 
