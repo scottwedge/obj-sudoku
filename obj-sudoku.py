@@ -73,11 +73,25 @@ class KnownSpot(UnknownSpot):  # Spot whose single value is known
 
 
 class Puzzle(KnownSpot, UnknownSpot):
-    def __init__(self):
+    def __init__(self, initial_values):
         self.num_spots = NUM_SPOTS  # For default 9x9 puzzle
         self.full_side = FULL_SIDE  # For default 9x9 puzzle
         self.state = "Init"
-
+        self.initial_values = initial_values
+        print("Initial values are {}".format(self.initial_values))  #DEBUG
+        self.puzz = dict()
+        for j in range(len(self.initial_values)):
+            if self.initial_values[j] == 0:
+                self.puzz[j] = UnknownSpot(j)
+            else:
+                self.puzz[j] = KnownSpot(j, self.initial_values[j])
+            print("Contents of spot {} are {}.".format(j, self.puzz[j].get_con())) 
+            print(j, self.puzz[j].get_con())
+      
+    def get_val(self, spot):
+        self.spot = spot
+        return self.puzz[self.spot].get_con() 
+        
 
 def main():
     initial_puzzle = [7,4,5,0,9,0,0,0,0,\
@@ -91,16 +105,10 @@ def main():
                       0,6,0,9,0,8,0,3,4]
 
 
-    # Load initial puzzle values
-    p = dict()  # Initialize puzzle dictionary
-    for j in range(len(initial_puzzle)):
-        if initial_puzzle[j] == 0:
-            p[j] = UnknownSpot(j)
-        else:
-            p[j] = KnownSpot(j, initial_puzzle[j])
-         
-        print("Contents of spot {} are {} of type {}.".format(j, p[j].get_con(), type(p[j]))) 
-   
+    p = Puzzle(initial_puzzle)
+
+    print()
+    print("First grid contains: {}".format(p.get_val(0)))
 
 
 
