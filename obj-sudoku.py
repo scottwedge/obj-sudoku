@@ -91,20 +91,17 @@ def main():
                       0,6,0,9,0,8,0,3,4]
 
 
-    first = UnknownSpot(0)
-    second = KnownSpot(1, 7)
-    
-    val = first.get_con()
-    print("Contents of spot {} are {}.".format(first.num, val)) 
-    print("Contents of spot {} are {}.".format(second.num, second.contents)) 
+    # Load initial puzzle values
+    p = dict()  # Initialize puzzle dictionary
+    for j in range(len(initial_puzzle)):
+        if initial_puzzle[j] == 0:
+            p[j] = UnknownSpot(j)
+        else:
+            p[j] = KnownSpot(j, initial_puzzle[j])
+         
+        print("Contents of spot {} are {} of type {}.".format(j, p[j].get_con(), type(p[j]))) 
    
 
-    for j in first.get_con():
-        print(j)
-
-    p = Puzzle()
-    print("Number of spots in puzzle is {}".format(p.num_spots))
-    print("Length of puzzle side is {}.".format(p.full_side))
 
 
 if __name__ == "__main__":
