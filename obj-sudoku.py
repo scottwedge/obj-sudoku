@@ -75,8 +75,8 @@ class Puzzle(KnownSpot, UnknownSpot):
     def __init__(self, initial_values):
         self.initial_values = initial_values
         self.num_spots = len(self.initial_values)  # Handle both 9x9 or 16x16 puzzle
-        self.full_side = int(self.initial_values ** 0.5)  # Handle both 9x9 or 16x16 puzzle
-        self.part_side = int(self.initial_values ** 0.25)  # Handle both 9x9 or 16x16 puzzle
+        self.full_side = int(self.num_spots ** 0.5)  # Handle both 9x9 or 16x16 puzzle
+        self.part_side = int(self.num_spots ** 0.25)  # Handle both 9x9 or 16x16 puzzle
         self.state = "Init"
 #        print("Initial values are {}".format(self.initial_values))  #DEBUG
         self.puzz = dict()
