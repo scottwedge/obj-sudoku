@@ -6,14 +6,14 @@
 # Global constants
 
 # Classes
-class UnknownSpot():  # Make this parent = UnknownSpot; child = KnownSpot 
-    def __init__(self, num, contents, row, column, grid):
+class Spot():  # 
+    def __init__(self, num, known, contents, row, column, grid):
         self.num = num  # Value of 0 through 80
+        self.known = known  # 'True' if single value contents are known, else False
         self.contents = contents  
         self.row = row
         self.column = column
         self.grid = grid
-        self.known = False  # Toggle to 'True' when contents reaches one value
 
     def get_con(self):
         return self.contents
@@ -40,17 +40,7 @@ class UnknownSpot():  # Make this parent = UnknownSpot; child = KnownSpot
         self.known = known
         
 
-class KnownSpot(UnknownSpot):  # Spot whose single value is known
-    def __init__(self, num, contents, row, column, grid):
-        self.num = num  
-        self.contents = contents
-        self.row = row
-        self.column = column
-        self.grid = grid
-        self.known = True
-
-
-class Puzzle(KnownSpot, UnknownSpot):
+class Puzzle(Spot):
     def __init__(self, initial_values):
         self.initial_values = initial_values
         self.num_spots = len(self.initial_values)  # Handle both 9x9 or 16x16 puzzle
@@ -107,9 +97,10 @@ class Puzzle(KnownSpot, UnknownSpot):
                                     #                                666777888
                                                                      
             if self.initial_values[num] == 0:
-                self.puzz[num] = UnknownSpot(num, all_values_list, row, column, grid)
+                self.puzz[num] = Spot(num, False, all_values_list, row, column, grid)
             else:
-                self.puzz[num] = KnownSpot(num, self.initial_values[num], row, column, grid)
+                self.puzz[num] = Spot(num, True, self.initial_values[num], row, column, grid)
+
             print("Spot {} .".format(num), end = "") 
             print("contains {}.".format(self.puzz[num].get_con()), end = "")
             print("Row= {},".format(self.puzz[num].get_row()), end = "")
@@ -135,8 +126,6 @@ def main():
 
     p = Puzzle(initial_puzzle)
 
-    print()
-    print("First grid contains: {}".format(p.get_val(0)))
 
 
 
