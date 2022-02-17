@@ -4,9 +4,8 @@
 # Assume 9x9 puzzle 
 
 # Global constants
-NUM_SPOTS = 81  # Number of spots in a 9x9 grid
-FULL_SIDE = int(NUM_SPOTS ** 0.5)  # Length and number of row(s), column(s) and internal grids
 
+# Classes
 class UnknownSpot():  # Make this parent = UnknownSpot; child = KnownSpot 
     def __init__(self, num):
         self.num = num  # Value of 0 through 80
@@ -74,11 +73,12 @@ class KnownSpot(UnknownSpot):  # Spot whose single value is known
 
 class Puzzle(KnownSpot, UnknownSpot):
     def __init__(self, initial_values):
-        self.num_spots = NUM_SPOTS  # For default 9x9 puzzle
-        self.full_side = FULL_SIDE  # For default 9x9 puzzle
-        self.state = "Init"
         self.initial_values = initial_values
-        print("Initial values are {}".format(self.initial_values))  #DEBUG
+        self.num_spots = len(self.initial_values)  # Handle both 9x9 or 16x16 puzzle
+        self.full_side = int(self.initial_values ** 0.5)  # Handle both 9x9 or 16x16 puzzle
+        self.part_side = int(self.initial_values ** 0.25)  # Handle both 9x9 or 16x16 puzzle
+        self.state = "Init"
+#        print("Initial values are {}".format(self.initial_values))  #DEBUG
         self.puzz = dict()
         for j in range(len(self.initial_values)):
             if self.initial_values[j] == 0:
