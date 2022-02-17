@@ -7,47 +7,14 @@
 
 # Classes
 class UnknownSpot():  # Make this parent = UnknownSpot; child = KnownSpot 
-    def __init__(self, num):
+    def __init__(self, num, contents, row, column, grid):
         self.num = num  # Value of 0 through 80
-        self.contents = [1,2,3,4,5,6,7,8,9]  # Initialize to all possible values 
+        self.contents = contents  
+        self.row = row
+        self.column = column
+        self.grid = grid
         self.known = False  # Toggle to 'True' when contents reaches one value
 
-        self.row = num // FULL_SIDE  # Calculate value using floor division '//' operation
-                                     # so spots 0-8 in row 0 ... spots 72-80 in row 8
-                                     # This results in the following row numbering:  000000000
-                                     #                                               111111111
-                                     #                                               222222222 
-                                     #                                               333333333 
-                                     #                                               444444444 
-                                     #                                               555555555 
-                                     #                                               666666666 
-                                     #                                               777777777 
-                                     #                                               888888888 
-
-        self.column = num % FULL_SIDE  # Calculate value using modulo '%' operation
-                                       # so spots 0,9..72 in column 0 ... spots 8,17..80 in column 8
-                                       # This has the following column numbering: 012345678
-                                       #                                          012345678
-                                       #                                          012345678
-                                       #                                          012345678
-                                       #                                          012345678
-                                       #                                          012345678
-                                       #                                          012345678
-                                       #                                          012345678
-                                       #                                          012345678
-            
-        self.grid = num // 27 * 3 + num // 3 % 3  # This results in the following grid numbering: 
-                                                  #                                000111222
-                                                  #                                000111222
-                                                  #                                000111222
-                                                  #                                333444555
-                                                  #                                333444555
-                                                  #                                333444555
-                                                  #                                666777888
-                                                  #                                666777888
-                                                  #                                666777888
-                                                                     
-            
     def get_con(self):
         return self.contents
 
@@ -57,6 +24,15 @@ class UnknownSpot():  # Make this parent = UnknownSpot; child = KnownSpot
     def remove(self, val):
         self.remove(val)
 
+    def get_row(self):  # Row, column and grid coordinate values are set when initialized 
+        return self.row  # and never change 
+
+    def get_column(self):
+        return self.column
+
+    def get_grid(self):
+        return self.grid
+
     def get_known(self):
         return self.known
 
@@ -65,9 +41,12 @@ class UnknownSpot():  # Make this parent = UnknownSpot; child = KnownSpot
         
 
 class KnownSpot(UnknownSpot):  # Spot whose single value is known
-    def __init__(self, num, contents):
+    def __init__(self, num, contents, row, column, grid):
         self.num = num  
         self.contents = contents
+        self.row = row
+        self.column = column
+        self.grid = grid
         self.known = True
 
 
@@ -78,15 +57,64 @@ class Puzzle(KnownSpot, UnknownSpot):
         self.full_side = int(self.num_spots ** 0.5)  # Handle both 9x9 or 16x16 puzzle
         self.part_side = int(self.num_spots ** 0.25)  # Handle both 9x9 or 16x16 puzzle
         self.state = "Init"
-#        print("Initial values are {}".format(self.initial_values))  #DEBUG
-        self.puzz = dict()
-        for j in range(len(self.initial_values)):
-            if self.initial_values[j] == 0:
-                self.puzz[j] = UnknownSpot(j)
+
+        # Calculate all possible values for undefined spot whether 9x9 or 16x16 puzzle
+        all_values_list = []  # Init list
+        for j in range(1, self.full_side + 1):
+            all_values_list.append(j)
+
+        self.puzz = dict()  # Init dict
+
+        for num in range(self.num_spots):  # For every value in initial puzzle
+            # Calculate row coordinate value for spot
+            row = num // self.full_side  # Calculate value using floor division '//' operation
+                                    # so spots 0-8 in row 0 ... spots 72-80 in row 8
+                                    # This results in the following row numbering:  000000000
+                                    #                                               111111111
+                                    #                                               222222222 
+                                    #                                               333333333 
+                                    #                                               444444444 
+                                    #                                               555555555 
+                                    #                                               666666666 
+                                    #                                               777777777 
+                                    #                                               888888888 
+
+            # Calculate column coordinate value for spot
+            column = num % self.full_side  # Calculate value using modulo '%' operation
+                                    # so spots 0,9..72 in column 0 ... spots 8,17..80 in column 8
+                                    # This has the following column numbering: 012345678
+                                    #                                          012345678
+                                    #                                          012345678
+                                    #                                          012345678
+                                    #                                          012345678
+                                    #                                          012345678
+                                    #                                          012345678
+                                    #                                          012345678
+                                    #                                          012345678
+                                                
+            # Calculate grid coordinat value for spot (in two lines for readability)
+            grid = num // self.part_side**self.part_side * self.part_side 
+            grid = grid + num // self.part_side % self.part_side  
+                                    # This results in the following grid numbering: 
+                                    #                                000111222
+                                    #                                000111222
+                                    #                                000111222
+                                    #                                333444555
+                                    #                                333444555
+                                    #                                333444555
+                                    #                                666777888
+                                    #                                666777888
+                                    #                                666777888
+                                                                     
+            if self.initial_values[num] == 0:
+                self.puzz[num] = UnknownSpot(num, all_values_list, row, column, grid)
             else:
-                self.puzz[j] = KnownSpot(j, self.initial_values[j])
-            print("Contents of spot {} are {}.".format(j, self.puzz[j].get_con())) 
-            print(j, self.puzz[j].get_con())
+                self.puzz[num] = KnownSpot(num, self.initial_values[num], row, column, grid)
+            print("Spot {} .".format(num), end = "") 
+            print("contains {}.".format(self.puzz[num].get_con()), end = "")
+            print("Row= {},".format(self.puzz[num].get_row()), end = "")
+            print("Column= {},".format(self.puzz[num].get_column()), end = "")
+            print("Grid= {}.".format(self.puzz[num].get_grid()))
       
     def get_val(self, spot):
         self.spot = spot
