@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # Sudoku puzzle written in object oriented Python
-# Assume 9x9 puzzle 
+# Calculates puzzle size so it can handle either 9x9 or 16x16 puzzle
 
 # Global constants
 
@@ -101,11 +101,13 @@ class Puzzle(Spot):
             else:
                 self.puzz[num] = Spot(num, True, self.initial_values[num], row, column, grid)
 
-            print("Spot {} .".format(num), end = "") 
-            print("contains {}.".format(self.puzz[num].get_con()), end = "")
-            print("Row= {},".format(self.puzz[num].get_row()), end = "")
-            print("Column= {},".format(self.puzz[num].get_column()), end = "")
-            print("Grid= {}.".format(self.puzz[num].get_grid()))
+            print("Spot {} ".format(num), end = "")  #DEBUG
+            print("contains {:^{}}".format(str(self.puzz[num].get_con()), 30), end = "")  #DEBUG 
+            # Must use column width to align columns
+            # Must use 'str' on list else get error 
+            print("Row= {}, ".format(self.puzz[num].get_row()), end = "")  #DEBUG
+            print("Column= {}, ".format(self.puzz[num].get_column()), end = "")  #DEBUG
+            print("Grid= {}.".format(self.puzz[num].get_grid()))  #DEBUG
       
     def get_val(self, spot):
         self.spot = spot
