@@ -3,7 +3,8 @@
 # Sudoku puzzle written in object oriented Python
 # Calculates puzzle size so it can handle either 9x9 or 16x16 puzzle
 
-# Global constants
+# Imports
+import copy  # Need to perform 'copy.copy' operation to assign unique list to all unknown spots
 
 # Classes
 class Spot():  # 
@@ -107,7 +108,7 @@ class Puzzle(Spot):
                                     #                                666777888
                                                                      
             if self.initial_values[num] == 0:
-                self.puzz[num] = Spot(num, False, all_values_list, row, column, grid)
+                self.puzz[num] = Spot(num, False, copy.copy(all_values_list), row, column, grid)
             else:
                 self.puzz[num] = Spot(num, True, self.initial_values[num], row, column, grid)
 
