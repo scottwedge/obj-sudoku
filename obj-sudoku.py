@@ -5,6 +5,7 @@
 
 # Imports
 import copy  # Need to perform 'copy.copy' operation to assign unique list to all unknown spots
+import time  #DEBUG insert delays to help figure out repeated looping
 
 # Classes
 class Spot():  # 
@@ -133,10 +134,11 @@ class Puzzle(Spot):
                 continue
             else:  # Value is known so remove from all other spots in same row except itself
                 row_number = self.puzz[j].get_row()
-                print("Working on row number: {}".format(row_number))
                 for k in range(self.num_spots):
+                    print("J,K has assigned values __: {},{}".format(j, k))  #DEBUG
+                    print()  #DEBUG space
                     if self.puzz[k].get_row() != row_number:  # Skip since wrong row
-#                        print("J in row {}, K in row {} so skip".format(row_number, self.puzz[k].get_row()))
+                        print("J in row {} but K in row {} so skip".format(row_number, self.puzz[k].get_row()))  #DEBUG
                         continue  
                     else:
                         if self.puzz[k].get_known() == True:  # skip since cannot remove from known spot (includes itself)
@@ -144,15 +146,17 @@ class Puzzle(Spot):
                         else:
                             j_con = self.puzz[j].get_con()
                             k_con = self.puzz[k].get_con()
-                            print("DEBUG J contents are: {}".format(j_con))
-                            print("DEBUG K contents are: {}".format(k_con))
-
-                            if j_con in k_con:  # remove value using 'rem' method
+                            print("DEBUG J at {} is: {}".format(time.ctime(), self.puzz[j].get_con()))
+                            print("DEBUG K at {} is: {}".format(time.ctime(), self.puzz[k].get_con()))
+                            time.sleep(1)  #DEBUG
+ 
+                            if self.puzz[j].get_con() in self.puzz[k].get_con():  # If duplicated
                                 print("DEBUG J in K so remove")
                                 self.puzz[k].rem(self.puzz[j].get_con())
-                                print("DEBUG K contents now {}".format(self.puzz[k].get_con()))
+                                print("DEBUG K contents now {} at {}".format(self.puzz[k].get_con(), time.ctime()))
+                                print()  #DEBUG add blank line
                             else:  # skip
-                                continue
+                                pass
 
 
 
