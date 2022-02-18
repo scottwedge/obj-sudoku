@@ -21,8 +21,18 @@ class Spot():  #
     def set_con(self, values):
         self.contents = values
 
-    def remove(self, val):
-        self.remove(val)
+    def rem(self, val):
+        self.val = val
+        con = self.get_con()
+        con.remove(self.val)
+        self.set_con(con)
+#        print("DEBUG K contents now {}".format(self.puzz[k].get_con()))
+        if len(self.get_con()) == 1:
+            self.known = True  # If only one value in contents then value is known
+            for j in self.get_con():
+                self.set_con(j)  # Convert contents from list of one value to that one value 
+                                 # so that it matches format of initial known single values
+
 
     def get_row(self):  # Row, column and grid coordinate values are set when initialized 
         return self.row  # and never change 
@@ -113,6 +123,37 @@ class Puzzle(Spot):
         self.spot = spot
         return self.puzz[self.spot].get_con() 
         
+    def solve_rows(self):
+        self.state = "Solving Rows"  # Update state
+
+        # For every spot in every row, if spot is 'known' remove that value from other spots in row
+        for j in range(self.num_spots):
+            if self.puzz[j].get_known() == False:  # Value is not known so skip
+                continue
+            else:  # Value is known so remove from all other spots in same row except itself
+                row_number = self.puzz[j].get_row()
+                print("Working on row number: {}".format(row_number))
+                for k in range(self.num_spots):
+                    if self.puzz[k].get_row() != row_number:  # Skip since wrong row
+#                        print("J in row {}, K in row {} so skip".format(row_number, self.puzz[k].get_row()))
+                        continue  
+                    else:
+                        if self.puzz[k].get_known() == True:  # skip since cannot remove from known spot (includes itself)
+                            continue
+                        else:
+                            j_con = self.puzz[j].get_con()
+                            k_con = self.puzz[k].get_con()
+                            print("DEBUG J contents are: {}".format(j_con))
+                            print("DEBUG K contents are: {}".format(k_con))
+
+                            if j_con in k_con:  # remove value using 'rem' method
+                                print("DEBUG J in K so remove")
+                                self.puzz[k].rem(self.puzz[j].get_con())
+                                print("DEBUG K contents now {}".format(self.puzz[k].get_con()))
+                            else:  # skip
+                                continue
+
+
 
 def main():
     initial_puzzle = [7,4,5,0,9,0,0,0,0,\
@@ -127,7 +168,7 @@ def main():
 
 
     p = Puzzle(initial_puzzle)
-
+    p.solve_rows()
 
 
 
