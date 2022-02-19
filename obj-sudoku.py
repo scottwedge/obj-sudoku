@@ -29,12 +29,11 @@ class Spot():  #
         con.remove(self.val)
         self.set_con(con)
 #        print("DEBUG K contents now {}".format(self.puzz[k].get_con()))
-        if len(self.get_con()) == 1:
+        if len(self.get_con()) == 1 and isinstance(self.get_con(), list):
             self.known = True  # If only one value in contents then value is known
             for j in self.get_con():
                 self.set_con(j)  # Convert contents from list of one value to that one value 
                                  # so that it matches format of initial known single values
-
 
     def get_row(self):  # Row, column and grid coordinate values are set when initialized 
         return self.row  # and never change 
@@ -146,8 +145,6 @@ class Puzzle(Spot):
                         if self.puzz[k].get_known() == True:  # skip since cannot remove from known spot (includes itself)
                             continue
                         else:
-                            j_con = self.puzz[j].get_con()
-                            k_con = self.puzz[k].get_con()
                             print("DEBUG J is: {}".format(self.puzz[j].get_con()))
                             print("DEBUG K is: {}".format(self.puzz[k].get_con()))
  
@@ -155,7 +152,6 @@ class Puzzle(Spot):
                                 print("DEBUG J in K so remove")
                                 self.puzz[k].rem(self.puzz[j].get_con())
                                 print("DEBUG K contents now {}".format(self.puzz[k].get_con()))
-                                time.sleep(0)  #DEBUG
                                 print()  #DEBUG add blank line
                             else:  # skip
                                 pass
@@ -187,7 +183,6 @@ class Puzzle(Spot):
                                 self.puzz[k].rem(self.puzz[j].get_con())
                                 print("DEBUG K contents now {}".format(self.puzz[k].get_con()))
                                 print()  #DEBUG add blank line
-                                time.sleep(0)  #DEBUG
                             else:  # skip
                                 pass
 
@@ -218,7 +213,6 @@ class Puzzle(Spot):
                                 self.puzz[k].rem(self.puzz[j].get_con())
                                 print("DEBUG K contents now {}".format(self.puzz[k].get_con()))
                                 print()  #DEBUG add blank line
-                                time.sleep(0)  #DEBUG
                             else:  # skip
                                 pass
 
@@ -227,7 +221,7 @@ class Puzzle(Spot):
         return self.num_possible_values
 
     def calc_num_possible_values(self):  # The sum of all possible values in all spots
-                                        # Use this number to determine if puzzle solving is stalled or not
+                                         # Use to determine if puzzle solving is stalled or not
         previous_value = self.get_num_possible_values()
         sum = 0
         for j in range(self.num_spots):
@@ -238,7 +232,8 @@ class Puzzle(Spot):
                 sum = sum + len(self.puzz[j].get_con())
         self.num_possible_values = sum
        
-        print("DEBUG Previous = {}, SUM = {}".format(previous_value, sum))  #DEBUG
+        print("DEBUG Previous = {}, SUM = {}".format(previous_value, self.num_possible_values))  #DEBUG
+
         if previous_value > sum:
             self.making_progress = True
         else:
@@ -248,32 +243,60 @@ class Puzzle(Spot):
 
 
 def main():
-    initial_puzzle = [7,4,5,0,9,0,0,0,0,\
-                      0,3,2,1,5,0,0,4,6,\
-                      0,0,0,2,8,0,5,0,3,\
-                      2,0,0,0,0,0,0,6,0,\
-                      9,8,0,6,0,0,3,5,1,\
-                      0,0,0,5,4,0,2,0,7,\
-                      3,0,8,0,0,0,0,0,2,\
-                      0,2,0,7,6,0,0,1,0,\
-                      0,6,0,9,0,8,0,3,4]
+    easy_puzzle = [7,4,5,0,9,0,0,0,0,\
+                   0,3,2,1,5,0,0,4,6,\
+                   0,0,0,2,8,0,5,0,3,\
+                   2,0,0,0,0,0,0,6,0,\
+                   9,8,0,6,0,0,3,5,1,\
+                   0,0,0,5,4,0,2,0,7,\
+                   3,0,8,0,0,0,0,0,2,\
+                   0,2,0,7,6,0,0,1,0,\
+                   0,6,0,9,0,8,0,3,4]
 
+    medium_puzzle = [8,0,0,7,0,6,0,0,0,\
+                     0,0,6,0,0,0,0,5,0,\
+                     0,9,2,4,0,0,0,7,6,\
+                     9,0,7,6,2,1,5,0,3,\
+                     0,2,0,0,0,0,0,1,0,\
+                     5,0,1,9,4,7,6,0,8,\
+                     2,5,0,0,0,4,1,8,0,\
+                     0,6,0,0,0,0,2,0,0,\
+                     0,0,0,2,0,5,0,0,4]
 
-    p = Puzzle(initial_puzzle)
+    hard_puzzle = [0,0,0,0,0,0,0,1,7,\
+                   0,0,7,0,6,2,0,0,5,\
+                   4,0,0,0,1,0,0,0,0,\
+                   0,7,0,0,0,3,0,0,8,\
+                   0,0,3,5,0,4,1,0,0,\
+                   8,0,0,1,0,0,0,6,0,\
+                   0,0,0,0,4,0,0,0,9,\
+                   1,0,0,7,9,0,2,0,0,\
+                   3,4,0,0,0,0,0,0,0]
+
+    hardest_puzzle = [0,0,0,2,0,1,5,0,3,\
+                      2,0,0,0,0,6,0,7,0,\
+                      0,0,9,0,0,0,0,0,0,\
+                      9,0,0,0,8,0,7,0,2,\
+                      0,1,0,0,0,0,0,3,0,\
+                      8,0,6,0,1,0,0,0,9,\
+                      0,0,0,0,0,0,9,0,0,\
+                      0,9,0,8,0,0,0,0,6,\
+                      3,0,8,7,0,2,0,0,0]
+   
+    p = Puzzle(easy_puzzle)
     print("Puzzle solving progress is: {}".format(p.making_progress))  # Debug
 
     while p.making_progress == True:
         p.solve_rows()
-        after_rows_total = p.calc_num_possible_values()
+        after_rows_solving_total = p.calc_num_possible_values()
         p.solve_columns()
-        after_columns_total = p.calc_num_possible_values()
+        after_columns_solving_total = p.calc_num_possible_values()
         p.solve_grids()
-        after_grids_total = p.calc_num_possible_values()
-        print("After row solving total = {}".format(after_rows_total))
-        print("After column solving total = {}".format(after_columns_total))
-        print("After grid solving total = {}".format(after_grids_total))
+        after_grids_solving_total = p.calc_num_possible_values()
+        print("After row solving total = {}".format(after_rows_solving_total))
+        print("After column solving total = {}".format(after_columns_solving_total))
+        print("After grid solving total = {}".format(after_grids_solving_total))
         print("PROGRESS STATE = {}".format(p.making_progress))
-        time.sleep(5)  #DEBUG pause for debugging
 
 
 
