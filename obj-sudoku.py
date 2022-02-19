@@ -185,10 +185,52 @@ class Puzzle(Spot):
                                 self.puzz[k].rem(self.puzz[j].get_con())
                                 print("DEBUG K contents now {}".format(self.puzz[k].get_con()))
                                 print()  #DEBUG add blank line
+                                time.sleep(0)  #DEBUG
+                            else:  # skip
+                                pass
+
+    def solve_grids(self):
+        self.state = "Solving Grids"  # Update state
+
+        # For every spot in every grids, if spot is 'known' remove that value from other spots in grids
+        for j in range(self.num_spots):
+            if self.puzz[j].get_known() == False:  # Value is not known so skip
+                continue
+            else:  # Value is known so remove from all other spots in same column except itself
+                grid_number = self.puzz[j].get_grid()
+                for k in range(self.num_spots):
+                    print("J,K GRIDS have assigned values __: {},{}".format(j, k))  #DEBUG
+                    print()  #DEBUG space
+                    if self.puzz[k].get_grid() != grid_number:  # Skip since wrong grid
+                        print("J in grid {} but K in grid {} so skip".format(grid_number, self.puzz[k].get_grid()))  #DEBUG
+                        continue  
+                    else:
+                        if self.puzz[k].get_known() == True:  # skip since cannot remove from known spot (includes itself)
+                            continue
+                        else:
+                            print("DEBUG J is: {}".format(self.puzz[j].get_con()))
+                            print("DEBUG K is: {}".format(self.puzz[k].get_con()))
+ 
+                            if self.puzz[j].get_con() in self.puzz[k].get_con():  # If duplicated
+                                print("DEBUG J in K so remove")
+                                self.puzz[k].rem(self.puzz[j].get_con())
+                                print("DEBUG K contents now {}".format(self.puzz[k].get_con()))
+                                print()  #DEBUG add blank line
                                 time.sleep(1)  #DEBUG
                             else:  # skip
                                 pass
 
+
+    def calculate_num_values(self):  # The sum of all possible values in all spots
+                                     # Use this number to determine if puzzle solving is stalled or not
+        sum = 0
+        for j in range(self.num_spots):
+            if self.puzz[j].get_known() == True:
+                sum = sum + 1  # Since spot is 'known' its contents are a single integer
+                               # Get TypeError if perform 'len' on integer so this is the workaround
+            else:
+                sum = sum + len(self.puzz[j].get_con())
+        return sum
 
 
 def main():
@@ -205,7 +247,14 @@ def main():
 
     p = Puzzle(initial_puzzle)
     p.solve_rows()
+    after_rows_total = p.calculate_num_values()
     p.solve_columns()
+    after_columns_total = p.calculate_num_values()
+    p.solve_grids()
+    after_grids_total = p.calculate_num_values()
+    print("After row solving total = {}".format(after_rows_total))
+    print("After column solving total = {}".format(after_columns_total))
+    print("After grid solving total = {}".format(after_grids_total))
 
 
 
