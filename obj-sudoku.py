@@ -59,6 +59,8 @@ class Puzzle(Spot):
         self.full_side = int(self.num_spots ** 0.5)  # Handle both 9x9 or 16x16 puzzle
         self.part_side = int(self.num_spots ** 0.25)  # Handle both 9x9 or 16x16 puzzle
         self.state = "Init"
+        self.making_progress = True  # Set initial value
+        self.num_possible_values = self.num_spots ** 2  # Initialize to largest possible value
 
         # Calculate all possible values for undefined spot whether 9x9 or 16x16 puzzle
         all_values_list = []  # Init list
@@ -216,13 +218,17 @@ class Puzzle(Spot):
                                 self.puzz[k].rem(self.puzz[j].get_con())
                                 print("DEBUG K contents now {}".format(self.puzz[k].get_con()))
                                 print()  #DEBUG add blank line
-                                time.sleep(1)  #DEBUG
+                                time.sleep(0)  #DEBUG
                             else:  # skip
                                 pass
 
 
-    def calculate_num_values(self):  # The sum of all possible values in all spots
-                                     # Use this number to determine if puzzle solving is stalled or not
+    def get_num_possible_values(self):
+        return self.num_possible_values
+
+    def calc_num_possible_values(self):  # The sum of all possible values in all spots
+                                        # Use this number to determine if puzzle solving is stalled or not
+        previous_value = self.get_num_possible_values()
         sum = 0
         for j in range(self.num_spots):
             if self.puzz[j].get_known() == True:
@@ -230,7 +236,15 @@ class Puzzle(Spot):
                                # Get TypeError if perform 'len' on integer so this is the workaround
             else:
                 sum = sum + len(self.puzz[j].get_con())
-        return sum
+        self.num_possible_values = sum
+       
+        print("DEBUG Previous = {}, SUM = {}".format(previous_value, sum))  #DEBUG
+        if previous_value > sum:
+            self.making_progress = True
+        else:
+            self.making_progress = False
+
+        return self.num_possible_values 
 
 
 def main():
@@ -246,15 +260,20 @@ def main():
 
 
     p = Puzzle(initial_puzzle)
-    p.solve_rows()
-    after_rows_total = p.calculate_num_values()
-    p.solve_columns()
-    after_columns_total = p.calculate_num_values()
-    p.solve_grids()
-    after_grids_total = p.calculate_num_values()
-    print("After row solving total = {}".format(after_rows_total))
-    print("After column solving total = {}".format(after_columns_total))
-    print("After grid solving total = {}".format(after_grids_total))
+    print("Puzzle solving progress is: {}".format(p.making_progress))  # Debug
+
+    while p.making_progress == True:
+        p.solve_rows()
+        after_rows_total = p.calc_num_possible_values()
+        p.solve_columns()
+        after_columns_total = p.calc_num_possible_values()
+        p.solve_grids()
+        after_grids_total = p.calc_num_possible_values()
+        print("After row solving total = {}".format(after_rows_total))
+        print("After column solving total = {}".format(after_columns_total))
+        print("After grid solving total = {}".format(after_grids_total))
+        print("PROGRESS STATE = {}".format(p.making_progress))
+        time.sleep(5)  #DEBUG pause for debugging
 
 
 
