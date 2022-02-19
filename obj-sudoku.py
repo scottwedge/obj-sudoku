@@ -135,7 +135,7 @@ class Puzzle(Spot):
             else:  # Value is known so remove from all other spots in same row except itself
                 row_number = self.puzz[j].get_row()
                 for k in range(self.num_spots):
-                    print("J,K has assigned values __: {},{}".format(j, k))  #DEBUG
+                    print("J,K ROWS have assigned values __: {},{}".format(j, k))  #DEBUG
                     print()  #DEBUG space
                     if self.puzz[k].get_row() != row_number:  # Skip since wrong row
                         print("J in row {} but K in row {} so skip".format(row_number, self.puzz[k].get_row()))  #DEBUG
@@ -146,15 +146,46 @@ class Puzzle(Spot):
                         else:
                             j_con = self.puzz[j].get_con()
                             k_con = self.puzz[k].get_con()
-                            print("DEBUG J at {} is: {}".format(time.ctime(), self.puzz[j].get_con()))
-                            print("DEBUG K at {} is: {}".format(time.ctime(), self.puzz[k].get_con()))
-                            time.sleep(1)  #DEBUG
+                            print("DEBUG J is: {}".format(self.puzz[j].get_con()))
+                            print("DEBUG K is: {}".format(self.puzz[k].get_con()))
  
                             if self.puzz[j].get_con() in self.puzz[k].get_con():  # If duplicated
                                 print("DEBUG J in K so remove")
                                 self.puzz[k].rem(self.puzz[j].get_con())
-                                print("DEBUG K contents now {} at {}".format(self.puzz[k].get_con(), time.ctime()))
+                                print("DEBUG K contents now {}".format(self.puzz[k].get_con()))
+                                time.sleep(0)  #DEBUG
                                 print()  #DEBUG add blank line
+                            else:  # skip
+                                pass
+
+    def solve_columns(self):
+        self.state = "Solving Columns"  # Update state
+
+        # For every spot in every column, if spot is 'known' remove that value from other spots in column
+        for j in range(self.num_spots):
+            if self.puzz[j].get_known() == False:  # Value is not known so skip
+                continue
+            else:  # Value is known so remove from all other spots in same column except itself
+                column_number = self.puzz[j].get_column()
+                for k in range(self.num_spots):
+                    print("J,K COLUMNS have assigned values __: {},{}".format(j, k))  #DEBUG
+                    print()  #DEBUG space
+                    if self.puzz[k].get_column() != column_number:  # Skip since wrong column
+                        print("J in column {} but K in column {} so skip".format(column_number, self.puzz[k].get_column()))  #DEBUG
+                        continue  
+                    else:
+                        if self.puzz[k].get_known() == True:  # skip since cannot remove from known spot (includes itself)
+                            continue
+                        else:
+                            print("DEBUG J is: {}".format(self.puzz[j].get_con()))
+                            print("DEBUG K is: {}".format(self.puzz[k].get_con()))
+ 
+                            if self.puzz[j].get_con() in self.puzz[k].get_con():  # If duplicated
+                                print("DEBUG J in K so remove")
+                                self.puzz[k].rem(self.puzz[j].get_con())
+                                print("DEBUG K contents now {}".format(self.puzz[k].get_con()))
+                                print()  #DEBUG add blank line
+                                time.sleep(1)  #DEBUG
                             else:  # skip
                                 pass
 
@@ -174,6 +205,7 @@ def main():
 
     p = Puzzle(initial_puzzle)
     p.solve_rows()
+    p.solve_columns()
 
 
 
