@@ -303,6 +303,22 @@ class Puzzle(Spot):
 
         return self.num_possible_values 
 
+    def display_puzzle(self):
+        max_col_width = dict()  # Calculate maximum width of every column
+        for j in range(self.full_side):
+            max_col_width[j] = 1  # Initialize all columns to 1
+        
+        for j in range(self.full_side):
+            if self.puzz[j].get_known() == True:
+                l = 1  # Length = 1 since value already known
+            else:
+                col = j % self.full_side  # Determine column
+                l = len(self.puzz[j].get_con())
+                if l > max_col_width[col]:
+                    max_col_width[col] = l
+        print(max_col_width)
+
+
 
 def main():
    
@@ -324,7 +340,7 @@ def main():
         print("After grid solving total = {}".format(after_grids_solving_total))
         print("PROGRESS STATE = {}".format(p.making_progress))
 
-
+    p.display_puzzle()
 
 if __name__ == "__main__":
     main()
