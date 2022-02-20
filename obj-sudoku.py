@@ -8,6 +8,68 @@ import copy  # Need to perform 'copy.copy' operation to assign unique list to al
 import time  #DEBUG insert delays to help figure out repeated looping
 
 # Classes
+class UserInput():
+    def __init__(self):
+        pass
+
+    def select_puzzle(self):
+        easy_puzzle = [7,4,5,0,9,0,0,0,0,\
+                       0,3,2,1,5,0,0,4,6,\
+                       0,0,0,2,8,0,5,0,3,\
+                       2,0,0,0,0,0,0,6,0,\
+                       9,8,0,6,0,0,3,5,1,\
+                       0,0,0,5,4,0,2,0,7,\
+                       3,0,8,0,0,0,0,0,2,\
+                       0,2,0,7,6,0,0,1,0,\
+                       0,6,0,9,0,8,0,3,4]
+    
+        medium_puzzle = [8,0,0,7,0,6,0,0,0,\
+                         0,0,6,0,0,0,0,5,0,\
+                         0,9,2,4,0,0,0,7,6,\
+                         9,0,7,6,2,1,5,0,3,\
+                         0,2,0,0,0,0,0,1,0,\
+                         5,0,1,9,4,7,6,0,8,\
+                         2,5,0,0,0,4,1,8,0,\
+                         0,6,0,0,0,0,2,0,0,\
+                         0,0,0,2,0,5,0,0,4]
+    
+        hard_puzzle = [0,0,0,0,0,0,0,1,7,\
+                       0,0,7,0,6,2,0,0,5,\
+                       4,0,0,0,1,0,0,0,0,\
+                       0,7,0,0,0,3,0,0,8,\
+                       0,0,3,5,0,4,1,0,0,\
+                       8,0,0,1,0,0,0,6,0,\
+                       0,0,0,0,4,0,0,0,9,\
+                       1,0,0,7,9,0,2,0,0,\
+                       3,4,0,0,0,0,0,0,0]
+    
+        hardest_puzzle = [0,0,0,2,0,1,5,0,3,\
+                          2,0,0,0,0,6,0,7,0,\
+                          0,0,9,0,0,0,0,0,0,\
+                          9,0,0,0,8,0,7,0,2,\
+                          0,1,0,0,0,0,0,3,0,\
+                          8,0,6,0,1,0,0,0,9,\
+                          0,0,0,0,0,0,9,0,0,\
+                          0,9,0,8,0,0,0,0,6,\
+                          3,0,8,7,0,2,0,0,0]
+
+        while True:
+            print("Select one of the following four puzzles:")
+            print("1. easy\n2. medium\n3. hard\n4. very hard")
+            entry = input("Enter 1 or 2 or 3 or 4: ")
+            if entry == "1":
+                return easy_puzzle
+            elif entry == "2":
+                return medium_puzzle
+            elif entry == "3":
+                return hard_puzzle
+            elif entry == "4":
+                return hardest_puzzle
+            else:
+                print("Please enter '1' or '2' or '3' or '4'")
+
+
+
 class Spot():  # 
     def __init__(self, num, known, contents, row, column, grid):
         self.num = num  # Value of 0 through 80
@@ -243,47 +305,11 @@ class Puzzle(Spot):
 
 
 def main():
-    easy_puzzle = [7,4,5,0,9,0,0,0,0,\
-                   0,3,2,1,5,0,0,4,6,\
-                   0,0,0,2,8,0,5,0,3,\
-                   2,0,0,0,0,0,0,6,0,\
-                   9,8,0,6,0,0,3,5,1,\
-                   0,0,0,5,4,0,2,0,7,\
-                   3,0,8,0,0,0,0,0,2,\
-                   0,2,0,7,6,0,0,1,0,\
-                   0,6,0,9,0,8,0,3,4]
-
-    medium_puzzle = [8,0,0,7,0,6,0,0,0,\
-                     0,0,6,0,0,0,0,5,0,\
-                     0,9,2,4,0,0,0,7,6,\
-                     9,0,7,6,2,1,5,0,3,\
-                     0,2,0,0,0,0,0,1,0,\
-                     5,0,1,9,4,7,6,0,8,\
-                     2,5,0,0,0,4,1,8,0,\
-                     0,6,0,0,0,0,2,0,0,\
-                     0,0,0,2,0,5,0,0,4]
-
-    hard_puzzle = [0,0,0,0,0,0,0,1,7,\
-                   0,0,7,0,6,2,0,0,5,\
-                   4,0,0,0,1,0,0,0,0,\
-                   0,7,0,0,0,3,0,0,8,\
-                   0,0,3,5,0,4,1,0,0,\
-                   8,0,0,1,0,0,0,6,0,\
-                   0,0,0,0,4,0,0,0,9,\
-                   1,0,0,7,9,0,2,0,0,\
-                   3,4,0,0,0,0,0,0,0]
-
-    hardest_puzzle = [0,0,0,2,0,1,5,0,3,\
-                      2,0,0,0,0,6,0,7,0,\
-                      0,0,9,0,0,0,0,0,0,\
-                      9,0,0,0,8,0,7,0,2,\
-                      0,1,0,0,0,0,0,3,0,\
-                      8,0,6,0,1,0,0,0,9,\
-                      0,0,0,0,0,0,9,0,0,\
-                      0,9,0,8,0,0,0,0,6,\
-                      3,0,8,7,0,2,0,0,0]
    
-    p = Puzzle(easy_puzzle)
+    ui = UserInput()
+    chosen_puzzle = ui.select_puzzle()
+
+    p = Puzzle(chosen_puzzle)
     print("Puzzle solving progress is: {}".format(p.making_progress))  # Debug
 
     while p.making_progress == True:
