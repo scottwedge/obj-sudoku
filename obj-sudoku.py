@@ -188,7 +188,7 @@ class Puzzle(Spot):
         self.spot = spot
         return self.puzz[self.spot].get_con() 
         
-    def solve_rows(self):
+    def solve_row_singles(self):
         self.state = "Solving Rows"  # Update state
 
         # For every spot in every row, if spot is 'known' remove that value from other spots in row
@@ -218,7 +218,7 @@ class Puzzle(Spot):
                             else:  # skip
                                 pass
 
-    def solve_columns(self):
+    def solve_column_singles(self):
         self.state = "Solving Columns"  # Update state
 
         # For every spot in every column, if spot is 'known' remove that value from other spots in column
@@ -248,7 +248,7 @@ class Puzzle(Spot):
                             else:  # skip
                                 pass
 
-    def solve_grids(self):
+    def solve_grid_singles(self):
         self.state = "Solving Grids"  # Update state
 
         # For every spot in every grids, if spot is 'known' remove that value from other spots in grids
@@ -278,6 +278,8 @@ class Puzzle(Spot):
                             else:  # skip
                                 pass
 
+    def solve_row_pairs(self):
+        pass  #DEBUG3 work on this next
 
     def get_num_possible_values(self):
         return self.num_possible_values
@@ -320,9 +322,9 @@ class Puzzle(Spot):
         print(cw)  # DEBUG
 
         for j in range(self.num_spots):
-            print("{:{}}  ".format(str(self.puzz[j].get_con()), 3*cw[j%self.full_side]), end = "")  # Must convert to string to print list
+            print("|{:^{}}  ".format(str(self.puzz[j].get_con()), 3*cw[j%self.full_side]), end = "")  # Must convert to string to print list
             if j % self.full_side == self.full_side - 1:
-                print()  # Print end of line at end of each line
+                print("||")  # Print end of line at end of each line
 
 
 def main():
@@ -334,11 +336,11 @@ def main():
     print("Puzzle solving progress is: {}".format(p.making_progress))  # Debug
 
     while p.making_progress == True:
-        p.solve_rows()
+        p.solve_row_singles()
         after_rows_solving_total = p.calc_num_possible_values()
-        p.solve_columns()
+        p.solve_column_singles()
         after_columns_solving_total = p.calc_num_possible_values()
-        p.solve_grids()
+        p.solve_grid_singles()
         after_grids_solving_total = p.calc_num_possible_values()
         print("After row solving total = {}".format(after_rows_solving_total))
         print("After column solving total = {}".format(after_columns_solving_total))
