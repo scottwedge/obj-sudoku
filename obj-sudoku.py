@@ -304,9 +304,9 @@ class Puzzle(Spot):
         return self.num_possible_values 
 
     def display_puzzle(self):
-        max_col_width = dict()  # Calculate maximum width of every column
+        cw = dict()  # Calculate maximum width of every column
         for j in range(self.full_side):
-            max_col_width[j] = 1  # Initialize all column widths to 1
+            cw[j] = 1  # Initialize all column widths to 1
         
         for j in range(self.num_spots):
             if self.puzz[j].get_known() == True:
@@ -314,14 +314,14 @@ class Puzzle(Spot):
             else:
                 col = j % self.full_side  # Determine column
                 l = len(self.puzz[j].get_con())
-                if l > max_col_width[col]:  # Calculate maximum width of every column
-                    max_col_width[col] = l
+                if l > cw[col]:  # Calculate maximum width of every column
+                    cw[col] = l
 
-        print(max_col_width)  # DEBUG
+        print(cw)  # DEBUG
 
         for j in range(self.num_spots):
-            print("{:{}}  ".format(str(self.puzz[j].get_con()), 3*max_col_width[j%self.full_side]), end = "")  # Must convert to string to print list
-            if j % self.full_side == self.full_side -1:
+            print("{:{}}  ".format(str(self.puzz[j].get_con()), 3*cw[j%self.full_side]), end = "")  # Must convert to string to print list
+            if j % self.full_side == self.full_side - 1:
                 print()  # Print end of line at end of each line
 
 
