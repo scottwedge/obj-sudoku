@@ -292,7 +292,41 @@ class Puzzle(Spot):
                 for k in range(self.num_spots):  # Check every other spot for a matching pair of values
                     (k_con, k_row, k_col, k_grid) = self.puzz[k].get_coords()  # Get contents, row, column and grid values
                     if j_con == k_con and j != k:  # Pairs must match but cannot compare to itself
+                        if j_row == k_row:  # ROW: Remove both values from all other spots in that row
+                            for m in range(self.num_spots):  
+                                if self.puzz[m].get_known() == True:  # Skip if known single value
+                                    continue
+                                (m_con, m_row, m_col, m_grid) = self.puzz[m].get_coords()  # Get contents, row, column and grid values
+                                if m_row != j_row or m == j or m == k:  # Skip if wrong row or comparing to both selfs
+                                    continue 
+                                else:
+                                    for val in j_con:  # For both values, remove from spot
+                                        if val in m_con:
+                                            self.puzz[m].rem(val)
                                 
+                        if j_col == k_col:  # COLUMN: Remove both values from all other spots in that column
+                            for m in range(self.num_spots):  
+                                if self.puzz[m].get_known() == True:  # Skip if known single value
+                                    continue
+                                (m_con, m_row, m_col, m_grid) = self.puzz[m].get_coords()  # Get contents, row, column and grid values
+                                if m_col != j_col or m == j or m == k:  # Skip if wrong column or comparing to both selfs
+                                    continue 
+                                else:
+                                    for val in j_con:  # For both values, remove from spot
+                                        if val in m_con:
+                                            self.puzz[m].rem(val)
+                                
+                        if j_grid == k_grid:  # GRID: Remove both values from all other spots in that grid
+                            for m in range(self.num_spots):  
+                                if self.puzz[m].get_known() == True:  # Skip if known single value
+                                    continue
+                                (m_con, m_row, m_col, m_grid) = self.puzz[m].get_coords()  # Get contents, row, column and grid values
+                                if m_grid != j_grid or m == j or m == k:  # Skip if wrong grid or comparing to both selfs
+                                    continue 
+                                else:
+                                    for val in j_con:  # For both values, remove from spot
+                                        if val in m_con:
+                                            self.puzz[m].rem(val)
 
 
     def get_num_possible_values(self):
