@@ -370,8 +370,8 @@ class Puzzle(Spot):
 
         return self.num_possible_values 
 
-    def display_puzzle(self):
-        cw = dict()  # Calculate maximum width of every column
+    def calc_column_widths(self):  # Calculate maximum width of every column
+        cw = dict()  # Init dict
         for j in range(self.full_side):
             cw[j] = 1  # Initialize all column widths to 1
         
@@ -383,17 +383,18 @@ class Puzzle(Spot):
                 l = len(self.puzz[j].get_con())
                 if l > cw[col]:  # Calculate maximum width of every column
                     cw[col] = l
+        return cw
 
-        print(cw)  # DEBUG
+    def display_puzzle(self):
+        cw = self.calc_column_widths()  # Get max column widths
 
         for j in range(self.num_spots):
             print("|{:^{}}  ".format(str(self.puzz[j].get_con()), 3*cw[j%self.full_side]), end = "")  # Must convert to string to print list
             if j % self.full_side == self.full_side - 1:
                 print("||")  # Print end of line at end of each line
 
-        
         for j in range(self.num_spots):
-            print(self.puzz[j].short_list_string())  # Display list without spaces to safe space
+            print(self.puzz[j].short_list_string())  # Display list without spaces to save space
 
 def main():
    
