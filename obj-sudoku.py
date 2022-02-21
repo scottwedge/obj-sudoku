@@ -191,7 +191,7 @@ class Puzzle(Spot):
         return self.puzz[self.spot].get_con() 
         
     def solve_row_singles(self):
-        self.state = "Solving Rows"  # Update state
+        self.state = "Solving Row Singles"  # Update state
 
         # For every spot in every row, if spot is 'known' remove that value from other spots in row
         for j in range(self.num_spots):
@@ -221,7 +221,7 @@ class Puzzle(Spot):
                                 pass
 
     def solve_column_singles(self):
-        self.state = "Solving Columns"  # Update state
+        self.state = "Solving Column Singles"  # Update state
 
         # For every spot in every column, if spot is 'known' remove that value from other spots in column
         for j in range(self.num_spots):
@@ -251,7 +251,7 @@ class Puzzle(Spot):
                                 pass
 
     def solve_grid_singles(self):
-        self.state = "Solving Grids"  # Update state
+        self.state = "Solving Grid Singles"  # Update state
 
         # For every spot in every grids, if spot is 'known' remove that value from other spots in grids
         for j in range(self.num_spots):
@@ -281,6 +281,7 @@ class Puzzle(Spot):
                                 pass
 
     def solve_pairs(self):  # If identical pair in group, remove two values from all other spots
+        self.state = "Solving Pairs"  # Update state
         for j in range(self.num_spots):
             if self.puzz[j].get_known() == True:  # If 'known' then only has a single value, so skip
                 continue
@@ -289,11 +290,9 @@ class Puzzle(Spot):
             else:
                 (j_con, j_row, j_col, j_grid) = self.puzz[j].get_coords()  # Get contents, row, column and grid values
                 for k in range(self.num_spots):  # Check every other spot for a matching pair of values
-                    if self.puzz[k].get_known() == False:
-                        (k_con, k_row, k_col, k_grid) = self.puzz[k].get_coords()  # Get contents, row, column and grid values
-                        if len(k_con) == 2:
-                            if j != k:  # Cannot compare to itself
-                               pass 
+                    (k_con, k_row, k_col, k_grid) = self.puzz[k].get_coords()  # Get contents, row, column and grid values
+                    if j_con == k_con and j != k:  # Pairs must match but cannot compare to itself
+                                
 
 
     def get_num_possible_values(self):
@@ -317,6 +316,7 @@ class Puzzle(Spot):
             self.making_progress = True
         else:
             self.making_progress = False
+            self.state = "Solving Stalled"  # Update state
 
         return self.num_possible_values 
 
