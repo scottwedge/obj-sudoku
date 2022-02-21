@@ -385,16 +385,21 @@ class Puzzle(Spot):
                     cw[col] = l
         return cw
 
-    def display_puzzle(self):
+    def display_puzzle_normal_column(self):
         cw = self.calc_column_widths()  # Get max column widths
 
         for j in range(self.num_spots):
-            print("|{:^{}}  ".format(str(self.puzz[j].get_con()), 3*cw[j%self.full_side]), end = "")  # Must convert to string to print list
+            print("|{:^{}}".format(str(self.puzz[j].get_con()), 3*cw[j%self.full_side]), end = "")  # Must convert to string to print list
             if j % self.full_side == self.full_side - 1:
                 print("||")  # Print end of line at end of each line
 
+    def display_puzzle_narrow_column(self):
+        cw = self.calc_column_widths()  # Get max column widths
+
         for j in range(self.num_spots):
-            print(self.puzz[j].short_list_string())  # Display list without spaces to save space
+            print("|{:^{}}".format(str(self.puzz[j].short_list_string()), 2*cw[j%self.full_side] + 1), end = "")  # Must convert to string to print list
+            if j % self.full_side == self.full_side - 1:
+                print("||")  # Print end of line at end of each line
 
 def main():
    
@@ -417,7 +422,9 @@ def main():
         print("PROGRESS STATE = {}".format(p.making_progress))
         p.solve_pairs()
 
-    p.display_puzzle()
+    p.display_puzzle_normal_column()
+    print()
+    p.display_puzzle_narrow_column()
 
 if __name__ == "__main__":
     main()
