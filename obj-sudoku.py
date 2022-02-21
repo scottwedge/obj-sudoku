@@ -124,9 +124,9 @@ class Spot():  #
                 for j in range(len(con) - 1):
                     short_list = "[" + str(con[0]) + "," + str(con[1]) + "]"
             elif len(con) > 2:
-                short_list = '['
-                for j in range(len(con)):
-                    short_list += str(con)  # Complete string with last value then ']'
+                short_list = '[' + str(con[0])
+                for j in range(1, len(con)):
+                    short_list += "," + str(con[j])  # Complete string with last value then ']'
                 short_list += "]"
         return short_list
             
