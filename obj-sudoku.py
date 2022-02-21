@@ -112,6 +112,8 @@ class Spot():  #
     def set_known(self, known):
         self.known = known
         
+    def get_coords(self):
+        return (self.contents, self.row, self.column, self.grid) 
 
 class Puzzle(Spot):
     def __init__(self, initial_values):
@@ -278,8 +280,21 @@ class Puzzle(Spot):
                             else:  # skip
                                 pass
 
-    def solve_row_pairs(self):
-        pass  #DEBUG3 work on this next
+    def solve_pairs(self):  # If identical pair in group, remove two values from all other spots
+        for j in range(self.num_spots):
+            if self.puzz[j].get_known() == True:  # If 'known' then only has a single value, so skip
+                continue
+            elif len(self.puzz[j].get_con()) != 2:  # Skip if not contain only two possible values
+                continue
+            else:
+                (j_con, j_row, j_col, j_grid) = self.puzz[j].get_coords()  # Get contents, row, column and grid values
+                for k in range(self.num_spots):  # Check every other spot for a matching pair of values
+                    if self.puzz[k].get_known() == False:
+                        (k_con, k_row, k_col, k_grid) = self.puzz[k].get_coords()  # Get contents, row, column and grid values
+                        if len(k_con) == 2:
+                            if j != k:  # Cannot compare to itself
+                               pass 
+
 
     def get_num_possible_values(self):
         return self.num_possible_values
@@ -346,6 +361,7 @@ def main():
         print("After column solving total = {}".format(after_columns_solving_total))
         print("After grid solving total = {}".format(after_grids_solving_total))
         print("PROGRESS STATE = {}".format(p.making_progress))
+        p.solve_pairs()
 
     p.display_puzzle()
 
