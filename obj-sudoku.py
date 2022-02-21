@@ -115,6 +115,22 @@ class Spot():  #
     def get_coords(self):
         return (self.contents, self.row, self.column, self.grid) 
 
+    def short_list_string(self):  # Display list without spaces to safe space
+        con = self.get_con()
+        if self.known == True:  # Single value
+            short_list = str(con)  # Single value is not displayed as a list of one
+        else:  # Handle two cases where number of values = 2 or number of values > 2
+            if len(con) == 2:
+                for j in range(len(con) - 1):
+                    short_list = "[" + str(con[0]) + "," + str(con[1]) + "]"
+            elif len(con) > 2:
+                short_list = '['
+                for j in range(len(con)):
+                    short_list += str(con)  # Complete string with last value then ']'
+                short_list += "]"
+        return short_list
+            
+
 class Puzzle(Spot):
     def __init__(self, initial_values):
         self.initial_values = initial_values
@@ -375,6 +391,9 @@ class Puzzle(Spot):
             if j % self.full_side == self.full_side - 1:
                 print("||")  # Print end of line at end of each line
 
+        
+        for j in range(self.num_spots):
+            print(self.puzz[j].short_list_string())  # Display list without spaces to safe space
 
 def main():
    
