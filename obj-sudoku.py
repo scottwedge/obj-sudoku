@@ -137,11 +137,15 @@ class Puzzle(Spot):
         self.num_spots = len(self.initial_values)  # Handle both 9x9 or 16x16 puzzle
         self.full_side = int(self.num_spots ** 0.5)  # Handle both 9x9 or 16x16 puzzle
         self.part_side = int(self.num_spots ** 0.25)  # Handle both 9x9 or 16x16 puzzle
-        self.state = "Init"
+        self.state = "Initiated"
+        self.action = "Initiating"
         self.making_progress = True  # Set initial value
         self.num_possible_values = self.num_spots ** 2  # Initialize to largest possible value
         self.narrow_divider_line = "+-+-+-+-+-+-+-+-+-+"  # Initialize value
         self.long_divider_line = "+--+--+--+--+--+--+--+--+--+"  # Initialize value
+        self.solved_spots = -1  # Initialize to invalid value
+        self.unsolved_spots = -1  # Initialize to invalid value
+        self.unsolved_combinations = -1  # Initialize to invalid value
 
         # Calculate all possible values for undefined spot whether 9x9 or 16x16 puzzle
         all_values_list = []  # Init list
@@ -209,7 +213,7 @@ class Puzzle(Spot):
         return self.puzz[self.spot].get_con() 
         
     def solve_row_singles(self):
-        self.state = "Solving Row Singles"  # Update state
+        self.action = "Solving Row Singles"  # Update action
 
         # For every spot in every row, if spot is 'known' remove that value from other spots in row
         for j in range(self.num_spots):
@@ -239,7 +243,7 @@ class Puzzle(Spot):
                                 pass
 
     def solve_column_singles(self):
-        self.state = "Solving Column Singles"  # Update state
+        self.action = "Solving Column Singles"  # Update action
 
         # For every spot in every column, if spot is 'known' remove that value from other spots in column
         for j in range(self.num_spots):
@@ -269,7 +273,7 @@ class Puzzle(Spot):
                                 pass
 
     def solve_grid_singles(self):
-        self.state = "Solving Grid Singles"  # Update state
+        self.action = "Solving Grid Singles"  # Update action
 
         # For every spot in every grids, if spot is 'known' remove that value from other spots in grids
         for j in range(self.num_spots):
@@ -299,7 +303,7 @@ class Puzzle(Spot):
                                 pass
 
     def solve_pairs(self):  # If identical pair in group, remove two values from all other spots
-        self.state = "Solving Pairs"  # Update state
+        self.action = "Solving Pairs"  # Update action
         for j in range(self.num_spots):
             if self.puzz[j].get_known() == True:  # If 'known' then only has a single value, so skip
                 continue
@@ -350,6 +354,25 @@ class Puzzle(Spot):
     def get_num_possible_values(self):
         return self.num_possible_values
 
+    def calc_solved_counts(self):
+        solved_spots = 0
+        unsolved_spots = 0
+        for j in range(self.num_spots):
+            if self.puzz[j].get_known() == True:
+                solved_spots += 1  # Increment solved count
+            else:
+                unsolved_spots += 1  # Increment unsolved count
+        self.solved_spots = solved_spots
+        self.unsolved_spots = unsolved_spots
+#        return (solved_spots, unsolved_spots) 
+
+    def calc_unsolved_combinations(self):
+        unsolved_combinations = 1
+        for j in range(self.num_spots):
+            if self.puzz[j].get_known() == False:
+                unsolved_combinations *= len(self.puzz[j].get_con())  
+        self.unsolved_combinations = unsolved_combinations  # Update value
+
     def calc_num_possible_values(self):  # The sum of all possible values in all spots
                                          # Use to determine if puzzle solving is stalled or not
         previous_value = self.get_num_possible_values()
@@ -366,9 +389,13 @@ class Puzzle(Spot):
 
         if previous_value > sum:
             self.making_progress = True
+            self.state = "Solving"
         else:
             self.making_progress = False
-            self.state = "Solving Stalled"  # Update state
+            if sum == self.num_spots:
+                self.state = "Puzzle solved"  # Puzzle is solved
+            else:
+                self.state = "Solving Stalled"  # Puzzle is stalled
 
         return self.num_possible_values 
 
@@ -427,6 +454,18 @@ class Puzzle(Spot):
                 print("|")  # Print end of line at end of each line
                 print(self.narrow_divider_line)  # Print narrow horizontal line between rows
 
+    def show_state(self):
+        print(self.state)
+
+    def show_solved_unsolved_counts(self):
+        print("Solved spot count = {}. Unsolved spot count = {}.".format(self.solved_spots, self.unsolved_spots))
+        if self.unsolved_spots > 0:
+           self.calc_unsolved_combinations()
+           self.show_unsolved_combinations()
+
+    def show_unsolved_combinations(self):
+        print("There are {} possible combinations.".format(self.unsolved_combinations))
+
 def main():
    
     ui = UserInput()
@@ -451,6 +490,10 @@ def main():
     p.display_puzzle_normal_column()
     print()
 #    p.display_puzzle_narrow_column()
+    p.show_state()
+    p.calc_solved_counts()
+    p.show_solved_unsolved_counts()
+
 
 if __name__ == "__main__":
     main()
