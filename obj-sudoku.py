@@ -140,6 +140,8 @@ class Puzzle(Spot):
         self.state = "Init"
         self.making_progress = True  # Set initial value
         self.num_possible_values = self.num_spots ** 2  # Initialize to largest possible value
+        self.narrow_divider_line = "+-+-+-+-+-+-+-+-+-+"  # Initialize value
+        self.long_divider_line = "+--+--+--+--+--+--+--+--+--+"  # Initialize value
 
         # Calculate all possible values for undefined spot whether 9x9 or 16x16 puzzle
         all_values_list = []  # Init list
@@ -194,13 +196,13 @@ class Puzzle(Spot):
             else:
                 self.puzz[num] = Spot(num, True, self.initial_values[num], row, column, grid)
 
-            print("Spot {} ".format(num), end = "")  #DEBUG
-            print("contains {:^{}}".format(str(self.puzz[num].get_con()), 30), end = "")  #DEBUG 
+#            print("Spot {} ".format(num), end = "")  #DEBUG
+#            print("contains {:^{}}".format(str(self.puzz[num].get_con()), 30), end = "")  #DEBUG 
             # Must use column width to align columns
             # Must use 'str' on list else get error 
-            print("Row= {}, ".format(self.puzz[num].get_row()), end = "")  #DEBUG
-            print("Column= {}, ".format(self.puzz[num].get_column()), end = "")  #DEBUG
-            print("Grid= {}.".format(self.puzz[num].get_grid()))  #DEBUG
+#            print("Row= {}, ".format(self.puzz[num].get_row()), end = "")  #DEBUG
+#            print("Column= {}, ".format(self.puzz[num].get_column()), end = "")  #DEBUG
+#            print("Grid= {}.".format(self.puzz[num].get_grid()))  #DEBUG
       
     def get_val(self, spot):
         self.spot = spot
@@ -216,23 +218,23 @@ class Puzzle(Spot):
             else:  # Value is known so remove from all other spots in same row except itself
                 row_number = self.puzz[j].get_row()
                 for k in range(self.num_spots):
-                    print("J,K ROWS have assigned values __: {},{}".format(j, k))  #DEBUG
-                    print()  #DEBUG space
+#                    print("J,K ROWS have assigned values __: {},{}".format(j, k))  #DEBUG
+#                    print()  #DEBUG space
                     if self.puzz[k].get_row() != row_number:  # Skip since wrong row
-                        print("J in row {} but K in row {} so skip".format(row_number, self.puzz[k].get_row()))  #DEBUG
+#                        print("J in row {} but K in row {} so skip".format(row_number, self.puzz[k].get_row()))  #DEBUG
                         continue  
                     else:
                         if self.puzz[k].get_known() == True:  # skip since cannot remove from known spot (includes itself)
                             continue
                         else:
-                            print("DEBUG J is: {}".format(self.puzz[j].get_con()))
-                            print("DEBUG K is: {}".format(self.puzz[k].get_con()))
+#                            print("DEBUG J is: {}".format(self.puzz[j].get_con()))
+#                            print("DEBUG K is: {}".format(self.puzz[k].get_con()))
  
                             if self.puzz[j].get_con() in self.puzz[k].get_con():  # If duplicated
-                                print("DEBUG J in K so remove")
+#                                print("DEBUG J in K so remove")
                                 self.puzz[k].rem(self.puzz[j].get_con())
-                                print("DEBUG K contents now {}".format(self.puzz[k].get_con()))
-                                print()  #DEBUG add blank line
+#                                print("DEBUG K contents now {}".format(self.puzz[k].get_con()))
+#                                print()  #DEBUG add blank line
                             else:  # skip
                                 pass
 
@@ -246,23 +248,23 @@ class Puzzle(Spot):
             else:  # Value is known so remove from all other spots in same column except itself
                 column_number = self.puzz[j].get_column()
                 for k in range(self.num_spots):
-                    print("J,K COLUMNS have assigned values __: {},{}".format(j, k))  #DEBUG
-                    print()  #DEBUG space
+#                    print("J,K COLUMNS have assigned values __: {},{}".format(j, k))  #DEBUG
+#                    print()  #DEBUG space
                     if self.puzz[k].get_column() != column_number:  # Skip since wrong column
-                        print("J in column {} but K in column {} so skip".format(column_number, self.puzz[k].get_column()))  #DEBUG
+#                        print("J in column {} but K in column {} so skip".format(column_number, self.puzz[k].get_column()))  #DEBUG
                         continue  
                     else:
                         if self.puzz[k].get_known() == True:  # skip since cannot remove from known spot (includes itself)
                             continue
                         else:
-                            print("DEBUG J is: {}".format(self.puzz[j].get_con()))
-                            print("DEBUG K is: {}".format(self.puzz[k].get_con()))
+#                            print("DEBUG J is: {}".format(self.puzz[j].get_con()))
+#                            print("DEBUG K is: {}".format(self.puzz[k].get_con()))
  
                             if self.puzz[j].get_con() in self.puzz[k].get_con():  # If duplicated
-                                print("DEBUG J in K so remove")
+#                                print("DEBUG J in K so remove")
                                 self.puzz[k].rem(self.puzz[j].get_con())
-                                print("DEBUG K contents now {}".format(self.puzz[k].get_con()))
-                                print()  #DEBUG add blank line
+#                                print("DEBUG K contents now {}".format(self.puzz[k].get_con()))
+#                                print()  #DEBUG add blank line
                             else:  # skip
                                 pass
 
@@ -276,23 +278,23 @@ class Puzzle(Spot):
             else:  # Value is known so remove from all other spots in same column except itself
                 grid_number = self.puzz[j].get_grid()
                 for k in range(self.num_spots):
-                    print("J,K GRIDS have assigned values __: {},{}".format(j, k))  #DEBUG
-                    print()  #DEBUG space
+#                    print("J,K GRIDS have assigned values __: {},{}".format(j, k))  #DEBUG
+#                    print()  #DEBUG space
                     if self.puzz[k].get_grid() != grid_number:  # Skip since wrong grid
-                        print("J in grid {} but K in grid {} so skip".format(grid_number, self.puzz[k].get_grid()))  #DEBUG
+#                        print("J in grid {} but K in grid {} so skip".format(grid_number, self.puzz[k].get_grid()))  #DEBUG
                         continue  
                     else:
                         if self.puzz[k].get_known() == True:  # skip since cannot remove from known spot (includes itself)
                             continue
                         else:
-                            print("DEBUG J is: {}".format(self.puzz[j].get_con()))
-                            print("DEBUG K is: {}".format(self.puzz[k].get_con()))
+#                            print("DEBUG J is: {}".format(self.puzz[j].get_con()))
+#                            print("DEBUG K is: {}".format(self.puzz[k].get_con()))
  
                             if self.puzz[j].get_con() in self.puzz[k].get_con():  # If duplicated
-                                print("DEBUG J in K so remove")
+#                                print("DEBUG J in K so remove")
                                 self.puzz[k].rem(self.puzz[j].get_con())
-                                print("DEBUG K contents now {}".format(self.puzz[k].get_con()))
-                                print()  #DEBUG add blank line
+#                                print("DEBUG K contents now {}".format(self.puzz[k].get_con()))
+#                                print()  #DEBUG add blank line
                             else:  # skip
                                 pass
 
@@ -360,7 +362,7 @@ class Puzzle(Spot):
                 sum = sum + len(self.puzz[j].get_con())
         self.num_possible_values = sum
        
-        print("DEBUG Previous = {}, SUM = {}".format(previous_value, self.num_possible_values))  #DEBUG
+#        print("DEBUG Previous = {}, SUM = {}".format(previous_value, self.num_possible_values))  #DEBUG
 
         if previous_value > sum:
             self.making_progress = True
@@ -383,23 +385,47 @@ class Puzzle(Spot):
                 l = len(self.puzz[j].get_con())
                 if l > cw[col]:  # Calculate maximum width of every column
                     cw[col] = l
+        self.create_long_divider_line(cw)  # Create divider line for normal column width
+        self.create_narrow_divider_line(cw)  # Create divider line for narrow column width
         return cw
 
-    def display_puzzle_normal_column(self):
-        cw = self.calc_column_widths()  # Get max column widths
+    def create_long_divider_line(self, cw):  
+        # Line has '+' at every intersection and '-' in between - for normal width columns puzzle
+        self.cw = cw
+        long_line = "+"  # First character
+        for j in self.cw:
+             long_line += + 3 * self.cw[j] * '-' + "+"  # Want three '-' for every number in grid
+        self.long_divider_line = long_line
 
+    def create_narrow_divider_line(self, cw):  
+        # Line has '+' at every intersection and '-' in between - for narrow width columns puzzle
+        self.cw = cw
+        narrow_line = "+"  # First character
+        for j in self.cw:
+             narrow_line += + (2 * self.cw[j] + 1) * '-' + "+"  #Dh  Want two '-' plus one for every number in grid
+        self.narrow_divider_line = narrow_line
+
+
+    def display_puzzle_normal_column(self):
+        cw = self.calc_column_widths()  # Get max column widths and create divider lines
+
+        print(self.long_divider_line)  # Print top most line
         for j in range(self.num_spots):
             print("|{:^{}}".format(str(self.puzz[j].get_con()), 3*cw[j%self.full_side]), end = "")  # Must convert to string to print list
             if j % self.full_side == self.full_side - 1:
-                print("||")  # Print end of line at end of each line
+                print("|")  # Print end of line at end of each line
+                print(self.long_divider_line)  # Print long horizontal line between rows
+                
 
     def display_puzzle_narrow_column(self):
         cw = self.calc_column_widths()  # Get max column widths
 
+        print(self.narrow_divider_line)  # Print top most line
         for j in range(self.num_spots):
             print("|{:^{}}".format(str(self.puzz[j].short_list_string()), 2*cw[j%self.full_side] + 1), end = "")  # Must convert to string to print list
             if j % self.full_side == self.full_side - 1:
-                print("||")  # Print end of line at end of each line
+                print("|")  # Print end of line at end of each line
+                print(self.narrow_divider_line)  # Print narrow horizontal line between rows
 
 def main():
    
@@ -407,7 +433,7 @@ def main():
     chosen_puzzle = ui.select_puzzle()
 
     p = Puzzle(chosen_puzzle)
-    print("Puzzle solving progress is: {}".format(p.making_progress))  # Debug
+#    print("Puzzle solving progress is: {}".format(p.making_progress))  # Debug
 
     while p.making_progress == True:
         p.solve_row_singles()
@@ -416,15 +442,15 @@ def main():
         after_columns_solving_total = p.calc_num_possible_values()
         p.solve_grid_singles()
         after_grids_solving_total = p.calc_num_possible_values()
-        print("After row solving total = {}".format(after_rows_solving_total))
-        print("After column solving total = {}".format(after_columns_solving_total))
-        print("After grid solving total = {}".format(after_grids_solving_total))
-        print("PROGRESS STATE = {}".format(p.making_progress))
+#        print("After row solving total = {}".format(after_rows_solving_total))  # DEBUG
+#        print("After column solving total = {}".format(after_columns_solving_total))  # DEBUG
+#        print("After grid solving total = {}".format(after_grids_solving_total))  # DEBUG
+#        print("PROGRESS STATE = {}".format(p.making_progress))  # DEBUG
         p.solve_pairs()
 
     p.display_puzzle_normal_column()
     print()
-    p.display_puzzle_narrow_column()
+#    p.display_puzzle_narrow_column()
 
 if __name__ == "__main__":
     main()
