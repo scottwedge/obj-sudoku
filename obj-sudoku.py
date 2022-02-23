@@ -10,9 +10,30 @@ import time  #DEBUG insert delays to help figure out repeated looping
 # Classes
 class UserInput():
     def __init__(self):
-        pass
+        self.play_game = True
+        self.column_width = "normal"  # Either "normal" or "narrow"; default to "normal"
+        self.puzzle_selected = False
 
-    def select_puzzle(self):
+    def start_menu(self):
+        print("Please choose one of the following options:")
+        entry = input("1. Select puzzle to solve\n2. Display puzzle with normal column width (default)\n3. Display puzzle with narrow column width\n4. Guess a value in stalled puzzle\n5. List unresolved spots and their possible values\n6. Quit game\nEnter selection: ")
+        if entry == "1":
+            return entry
+        elif entry == "2":
+            self.column_width = "normal"
+        elif entry == "3":
+            self.column_width = "narrow"
+        elif entry == "4":
+            return entry
+        elif entry == "5":
+            return entry
+        elif entry == "6":
+            self.play_game = False
+        else:
+            pass
+
+
+    def puzzle_menu(self):
         easy_puzzle = [7,4,5,0,9,0,0,0,0,\
                        0,3,2,1,5,0,0,4,6,\
                        0,0,0,2,8,0,5,0,3,\
@@ -67,7 +88,6 @@ class UserInput():
                 return hardest_puzzle
             else:
                 print("Please enter '1' or '2' or '3' or '4'")
-
 
 
 class Spot():  # 
@@ -132,8 +152,9 @@ class Spot():  #
             
 
 class Puzzle(Spot):
-    def __init__(self, initial_values):
+    def __init__(self, initial_values, width):
         self.initial_values = initial_values
+        self.column_width_type = width  # set in UserInput.start_menu
         self.num_spots = len(self.initial_values)  # Handle both 9x9 or 16x16 puzzle
         self.full_side = int(self.num_spots ** 0.5)  # Handle both 9x9 or 16x16 puzzle
         self.part_side = int(self.num_spots ** 0.25)  # Handle both 9x9 or 16x16 puzzle
@@ -454,6 +475,15 @@ class Puzzle(Spot):
                 print("|")  # Print end of line at end of each line
                 print(self.narrow_divider_line)  # Print narrow horizontal line between rows
 
+    def display_puzzle(self):
+        if self.column_width_type == "normal":  # Determine if narrow or normal columns 
+            self.display_puzzle_normal_column()
+        elif self.column_width_type == "narrow":  # Determine if narrow or normal columns 
+            self.display_puzzle_narrow_column()
+        else:
+            pass  # Invalid condition
+
+
     def show_state(self):
         print(self.state)
 
@@ -469,30 +499,36 @@ class Puzzle(Spot):
 def main():
    
     ui = UserInput()
-    chosen_puzzle = ui.select_puzzle()
-
-    p = Puzzle(chosen_puzzle)
-#    print("Puzzle solving progress is: {}".format(p.making_progress))  # Debug
-
-    while p.making_progress == True:
-        p.solve_row_singles()
-        after_rows_solving_total = p.calc_num_possible_values()
-        p.solve_column_singles()
-        after_columns_solving_total = p.calc_num_possible_values()
-        p.solve_grid_singles()
-        after_grids_solving_total = p.calc_num_possible_values()
-#        print("After row solving total = {}".format(after_rows_solving_total))  # DEBUG
-#        print("After column solving total = {}".format(after_columns_solving_total))  # DEBUG
-#        print("After grid solving total = {}".format(after_grids_solving_total))  # DEBUG
-#        print("PROGRESS STATE = {}".format(p.making_progress))  # DEBUG
-        p.solve_pairs()
-
-    p.display_puzzle_normal_column()
-    print()
-#    p.display_puzzle_narrow_column()
-    p.show_state()
-    p.calc_solved_counts()
-    p.show_solved_unsolved_counts()
+    while ui.play_game == True:  # Play game until quit
+        entry = ui.start_menu()  # Choose option in Starting menu
+    
+        if entry == "1":
+            ui.puzzle_selected = True
+            chosen_puzzle = ui.puzzle_menu()
+            width = ui.column_width_type
+    
+            p = Puzzle(chosen_puzzle, width)
+    #    print("Puzzle solving progress is: {}".format(p.making_progress))  # Debug
+    
+            while p.making_progress == True:
+                p.solve_row_singles()
+                after_rows_solving_total = p.calc_num_possible_values()
+                p.solve_column_singles()
+                after_columns_solving_total = p.calc_num_possible_values()
+                p.solve_grid_singles()
+                after_grids_solving_total = p.calc_num_possible_values()
+    #        print("After row solving total = {}".format(after_rows_solving_total))  # DEBUG
+    #        print("After column solving total = {}".format(after_columns_solving_total))  # DEBUG
+    #        print("After grid solving total = {}".format(after_grids_solving_total))  # DEBUG
+    #        print("PROGRESS STATE = {}".format(p.making_progress))  # DEBUG
+                p.solve_pairs()
+    
+            p.display_puzzle()
+            print()
+    #        p.display_puzzle_narrow_column()
+            p.show_state()
+            p.calc_solved_counts()
+            p.show_solved_unsolved_counts()
 
 
 if __name__ == "__main__":
