@@ -168,7 +168,7 @@ class Puzzle():
         self.long_divider_line = "+--+--+--+--+--+--+--+--+--+"  # Initialize value
         self.solved_spots = -1  # Initialize to invalid value
         self.unsolved_spots = -1  # Initialize to invalid value
-        self.unsolved_combinations = -1  # Initialize to invalid value
+        self.unsolved_combinations_count = -1  # Initialize to invalid value
 
         # Calculate all possible values for undefined spot whether 9x9 or 16x16 puzzle
         all_values_list = []  # Init list
@@ -390,11 +390,11 @@ class Puzzle():
 #        return (solved_spots, unsolved_spots) 
 
     def calc_unsolved_combinations(self):
-        unsolved_combinations = 1
+        unsolved_combinations_count = 1
         for j in range(self.num_spots):
             if self.puzz[j].get_known() == False:
-                unsolved_combinations *= len(self.puzz[j].get_con())  
-        self.unsolved_combinations = unsolved_combinations  # Update value
+                unsolved_combinations_count *= len(self.puzz[j].get_con())  
+        self.unsolved_combinations_count = unsolved_combinations_count  # Update value
 
     def calc_num_possible_values(self):  # The sum of all possible values in all spots
                                          # Use to determine if puzzle solving is stalled or not
@@ -496,7 +496,14 @@ class Puzzle():
            self.show_unsolved_combinations()
 
     def show_unsolved_combinations(self):
-        print("There are {:,} possible combinations.".format(self.unsolved_combinations))  # Format with ',' as thousands separator
+        print("There are {:,} possible combinations.".format(self.unsolved_combinations_count))  # Format with ',' as thousands separator
+
+    def unsolved_spot_guesses(self):
+        possible_guess = dict()
+        for j in range(self.num_spots):
+            if self.puzz[j].get_known() == False:
+                possible_guess[j]= self.puzz[j].get_con()
+        return possible_guess
 
 def main():
    
@@ -531,6 +538,10 @@ def main():
             p.show_state()
             p.calc_solved_counts()
             p.show_solved_unsolved_counts()
+
+        if entry == "5":
+            guesses = p.unsolved_spot_guesses()
+            print(guesses)
 
 
 if __name__ == "__main__":
