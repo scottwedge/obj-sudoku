@@ -15,6 +15,7 @@ class UserInput():
         self.puzzle_selected = False
 
     def start_menu(self):
+        print()  # Spacing blank line
         print("Please choose one of the following options:")
         entry = input("1. Select puzzle to solve\n2. Display puzzle with normal column width (default)\n3. Display puzzle with narrow column width\n4. Guess a value in stalled puzzle\n5. List unresolved spots and their possible values\n6. Quit game\nEnter selection: ")
         if entry == "1":
@@ -75,6 +76,7 @@ class UserInput():
                           3,0,8,7,0,2,0,0,0]
 
         while True:
+            print()  # Blank spacing line
             print("Select one of the following four puzzles:")
             print("1. easy\n2. medium\n3. hard\n4. very hard")
             entry = input("Enter 1 or 2 or 3 or 4: ")
@@ -151,7 +153,7 @@ class Spot():  #
         return short_list
             
 
-class Puzzle(Spot):
+class Puzzle():
     def __init__(self, initial_values, width):
         self.initial_values = initial_values
         self.column_width_type = width  # set in UserInput.start_menu
@@ -494,7 +496,7 @@ class Puzzle(Spot):
            self.show_unsolved_combinations()
 
     def show_unsolved_combinations(self):
-        print("There are {} possible combinations.".format(self.unsolved_combinations))
+        print("There are {:,} possible combinations.".format(self.unsolved_combinations))  # Format with ',' as thousands separator
 
 def main():
    
@@ -505,7 +507,7 @@ def main():
         if entry == "1":
             ui.puzzle_selected = True
             chosen_puzzle = ui.puzzle_menu()
-            width = ui.column_width_type
+            width = ui.column_width
     
             p = Puzzle(chosen_puzzle, width)
     #    print("Puzzle solving progress is: {}".format(p.making_progress))  # Debug
