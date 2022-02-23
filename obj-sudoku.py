@@ -17,16 +17,16 @@ class UserInput():
     def start_menu(self):
         print()  # Spacing blank line
         print("Please choose one of the following options:")
-        entry = input("1. Select puzzle to solve\n2. Display puzzle with normal column width (default)\n3. Display puzzle with narrow column width\n4. Guess a value in stalled puzzle\n5. List unresolved spots and their possible values\n6. Quit game\nEnter selection: ")
+        entry = input("1. Select puzzle to solve\n2. Display puzzle with normal column width (default)\n3. Display puzzle with narrow column width\n4. List unresolved spots and their possible values\n5. Select a spot and try one of its possible values\n6. Quit game\nEnter selection: ")
         if entry == "1":
             return entry
         elif entry == "2":
             self.column_width = "normal"
         elif entry == "3":
             self.column_width = "narrow"
-        elif entry == "4":
-            return entry
         elif entry == "5":
+            return entry
+        elif entry == "4":
             return entry
         elif entry == "6":
             self.play_game = False
@@ -539,9 +539,10 @@ def main():
             p.calc_solved_counts()
             p.show_solved_unsolved_counts()
 
-        if entry == "5":
+        if entry == "4":
             guesses = p.unsolved_spot_guesses()
-            print(guesses)
+            for j in guesses:
+                print("Spot {} contains {}".format(j, guesses[j]))
 
 
 if __name__ == "__main__":
