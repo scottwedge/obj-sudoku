@@ -91,6 +91,29 @@ class UserInput():
             else:
                 print("Please enter '1' or '2' or '3' or '4'")
 
+    def choose_unresolved_spot(self, guesses):
+        self.guesses = guesses
+        print()  # Blank spacer line
+        entry = input("Select a spot to guess a value: ")
+        try:
+            entry = int(entry)
+            if entry not in self.guesses:
+                print("{} is not valid. Choose from the Spot list above".format(entry))
+        except ValueError:
+            print("Enter an integer value")
+        else:
+            pass
+        return entry
+
+    def guess_unresolved_value(self, guesses, spot_entry):  # Select value for guess
+        self.guesses = guesses
+        self.spot_entry = spot_entry
+        possible_values = self.guesses[self.spot_entry]
+        print("Possible values to select for spot {} are: ".format(spot_entry), end = "")
+        for j in self.guesses[self.spot_entry]:
+            print("{} ".format(j), end = "")
+        print()  # Print end of line
+        return guess_value 
 
 class Spot():  # 
     def __init__(self, num, known, contents, row, column, grid):
@@ -571,6 +594,8 @@ def main():
                 (g, h) = padded_guesses_list[j + 3]
                 print("{:{}}{:{}}{:{}}{:{}}{:{}}{:{}}{:{}}{:{}}".format(str(a), w1,str(b), w2, str(c), w1, str(d), w2, str(e), w1, str(f), w2, str(g), w1, str(h), w2))
 
+            spot_entry = ui.choose_unresolved_spot(guesses)  # Select spot for guess
+            guess_value = ui.guess_unresolved_value(guesses, spot_entry)  # Select value for guess
 
 if __name__ == "__main__":
     main()
