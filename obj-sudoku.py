@@ -547,9 +547,22 @@ def main():
         if entry == "5":
             guesses = p.unsolved_spot_guesses()
             guesses_list = list(guesses.items())
+            l = len(guesses_list)
+            excess = l % 4
+            if excess != 0:
+                num_padding = 4 - excess  # Pad the list with blanks since print four values per line
+                for j in range(excess):
+                    guesses_list.append(("",""))
+
+            print("Number of unresolved spots is {}.".format(l))
+            print()  # Spacer line
             print("Unresolved spots and contents are:")
-            w1 = 4
-            w2 = 15
+            w1 = 5  # Format width for spot number
+            w2 = 18  # Format width for contents number
+
+            t1 = "Spot"
+            t2 = "Contents"
+            print("{:{}}{:{}}{:{}}{:{}}{:{}}{:{}}{:{}}{:{}}".format(str(t1), w1,str(t2), w2, str(t1), w1, str(t2), w2, str(t1), w1, str(t2), w2, str(t1), w1, str(t2), w2))
             for j in range(0, len(guesses_list), 4):  # Print four spots per line
                 (a, b) = guesses_list[j]
                 (c, d) = guesses_list[j + 1]
@@ -558,8 +571,6 @@ def main():
                 print("{:{}}{:{}}{:{}}{:{}}{:{}}{:{}}{:{}}{:{}}".format(str(a), w1,str(b), w2, str(c), w1, str(d), w2, str(e), w1, str(f), w2, str(g), w1, str(h), w2))
 
 
-
 if __name__ == "__main__":
     main()
-
 
