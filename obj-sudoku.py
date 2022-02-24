@@ -24,9 +24,9 @@ class UserInput():
             self.column_width = "normal"
         elif entry == "3":
             self.column_width = "narrow"
-        elif entry == "5":
-            return entry
         elif entry == "4":
+            return entry
+        elif entry == "5":
             return entry
         elif entry == "6":
             self.play_game = False
@@ -543,6 +543,20 @@ def main():
             guesses = p.unsolved_spot_guesses()
             for j in guesses:
                 print("Spot {} contains {}".format(j, guesses[j]))
+
+        if entry == "5":
+            guesses = p.unsolved_spot_guesses()
+            guesses_list = list(guesses.items())
+            print("Unresolved spots and contents are:")
+            w1 = 4
+            w2 = 15
+            for j in range(0, len(guesses_list), 4):  # Print four spots per line
+                (a, b) = guesses_list[j]
+                (c, d) = guesses_list[j + 1]
+                (e, f) = guesses_list[j + 2]
+                (g, h) = guesses_list[j + 3]
+                print("{:{}}{:{}}{:{}}{:{}}{:{}}{:{}}{:{}}{:{}}".format(str(a), w1,str(b), w2, str(c), w1, str(d), w2, str(e), w1, str(f), w2, str(g), w1, str(h), w2))
+
 
 
 if __name__ == "__main__":
