@@ -93,27 +93,46 @@ class UserInput():
 
     def choose_unresolved_spot(self, guesses):
         self.guesses = guesses
-        print()  # Blank spacer line
-        entry = input("Select a spot to guess a value: ")
-        try:
-            entry = int(entry)
-            if entry not in self.guesses:
-                print("{} is not valid. Choose from the Spot list above".format(entry))
-        except ValueError:
-            print("Enter an integer value")
-        else:
-            pass
+        print(self.guesses)  #DEBUG
+        valid_value = False
+        while not valid_value:  # Loop until valid spot is entered
+            print()  # Blank spacer line
+            entry = input("Select a spot to guess a value: ")
+            try:
+                entry = int(entry)
+                if entry not in self.guesses:
+                    print("{} is not valid. Choose from the Spot list above".format(entry))
+                else:
+                    valid_value = True
+            except ValueError:
+                print("Enter an integer value")
         return entry
 
     def guess_unresolved_value(self, guesses, spot_entry):  # Select value for guess
         self.guesses = guesses
         self.spot_entry = spot_entry
         possible_values = self.guesses[self.spot_entry]
-        print("Possible values to select for spot {} are: ".format(spot_entry), end = "")
-        for j in self.guesses[self.spot_entry]:
-            print("{} ".format(j), end = "")
-        print()  # Print end of line
-        return guess_value 
+        guess_attempt = False
+        while not guess_attempt:  # Loop until valid guess is entered
+            print()
+            print("Possible values to select for spot {} are: ".format(self.spot_entry), end = "")
+            possible_values_string = "{}".format(possible_values[0])  # Print first of possible value 
+            for j in range(1, len(possible_values)):
+                possible_values_string += " or {}".format(possible_values[j])  # Print 'or' between remaining possible values 
+            possible_values_string += "."  # Print end of line
+            print(possible_values_string)
+            print()
+            guess_value = input("Select one of the content values to try in the puzzle: ")
+            try:
+                guess_value = int(guess_value)
+                if guess_value not in possible_values:
+                    print("Choose one of the valid values for spot {} which are {}.".format(self.spot_entry, possible_values))
+                else:
+                    guess_attempt = True
+            except ValueError:
+                print()
+                print("'{}' is not a valid choice. Enter one of: {}".format(guess_value, possible_values_string))
+        return guess_value
 
 class Spot():  # 
     def __init__(self, num, known, contents, row, column, grid):
