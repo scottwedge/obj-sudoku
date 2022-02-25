@@ -93,7 +93,6 @@ class UserInput():
 
     def choose_unresolved_spot(self, guesses):
         self.guesses = guesses
-        print(self.guesses)  #DEBUG
         valid_value = False
         while not valid_value:  # Loop until valid spot is entered
             print()  # Blank spacer line
@@ -615,6 +614,9 @@ def main():
 
             spot_entry = ui.choose_unresolved_spot(guesses)  # Select spot for guess
             guess_value = ui.guess_unresolved_value(guesses, spot_entry)  # Select value for guess
+
+            g = copy.copy(p)  # Make copy of stalled puzzle; try guess on copy
+
 
 if __name__ == "__main__":
     main()
