@@ -17,21 +17,24 @@ class UserInput():
     def start_menu(self):
         print()  # Spacing blank line
         print("Please choose one of the following options:")
-        entry = input("1. Select puzzle to solve\n2. Display puzzle with normal column width (default)\n3. Display puzzle with narrow column width\n4. List unresolved spots and their possible values\n5. Select a spot and try one of its possible values\n6. Display puzzle with double lines around internal grids\n7. Quit game\nEnter selection: ")
-        if entry == "1":
+        entry = input("1. Select puzzle to solve\n2. Solve puzzle\n3. Show puzzle\n4.Display puzzle with normal column width (default)\n5. Display puzzle with narrow column width\n6. Display puzzle with double lines around internal grids\n7. List unresolved spots and their possible values\n8. Select a spot and try one of its possible values\n10. Quit game\nEnter selection: ")
+        if entry == "1":  # Select puzzle
             return entry
-        elif entry == "2":
+        elif entry == "2":  # Solve puzzle
+            return entry
+        elif entry == "3":  # Show puzzle
+            return entry
+        elif entry == "4":  # Use normal column width (default)
             self.normal_column_width = True
-        elif entry == "3":
+        elif entry == "5":  # Use narrow column width  (not default)
             self.normal_column_width = False  # For 'narrow' column width
-        elif entry == "4":
+        elif entry == "6":  # Use double lines (++======++ or ||) around internal grids (not default)
+            self.single_line = False  # Highlight internal grid boundaries with double line
+        elif entry == "7":  # List unresolved spots and their values
             return entry
-        elif entry == "5":
+        elif entry == "8":  # Select a spot and guess a value 
             return entry
-        elif entry == "6":
-#            self.single_line = False  # Highlight internal grid boundaries with double line
-            return entry
-        elif entry == "7":
+        elif entry == "10":  # Exit game
             self.play_game = False
         else:
             pass
@@ -494,6 +497,14 @@ class Puzzle():
              long_line += + 3 * self.cw[j] * '-' + "+"  # Want three '-' for every number in grid
         self.long_divider_line = long_line
 
+    def create_long_divider_double_line(self, cw):  
+        # Line has '++' at internal grid intersection and '=' in between for normal width columns puzzle
+        self.cw = cw
+        double_line = "++"  # First characters
+        for j in self.cw:
+             long_line +=  3 * self.cw[j] * '=' + "+"  # Want three '=' for every number in grid
+        self.double_line = double_line
+
     def create_narrow_divider_line(self, cw):  
         # Line has '+' at every intersection and '-' in between - for narrow width columns puzzle
         self.cw = cw
@@ -502,13 +513,23 @@ class Puzzle():
              narrow_line += + (2 * self.cw[j] + 1) * '-' + "+"  #Dh  Want two '-' plus one for every number in grid
         self.narrow_divider_line = narrow_line
 
+    def create_narrow_divider_double_line(self, cw):  
+        # Line has '++' at every internal grid intersection and '=' in between for narrow width columns puzzle
+        self.cw = cw
+        narrow_line = "++"  # First characters
+        for j in self.cw:
+             narrow_line += + (2 * self.cw[j] + 1) * '=' + "+"  #Dh  Want two '= plus one for every number in grid
+        self.narrow_divider_line = narrow_line
+
+
 
     def display_puzzle_normal_column(self):
         cw = self.calc_column_widths()  # Get max column widths and create divider lines
 
-        print(self.long_divider_line)  # Print top most line
-        if self.single_line == False:
-            print(self.long_divider_line)  # Print second top most line
+        if self.single_line == True:
+            print(self.long_divider_line)  # Print top most line
+        else:
+            print(self.double_line)  # Print top most line as 'double' with '++====+===+====++'
 
         for j in range(self.num_spots):
             print("|{:^{}}".format(str(self.puzz[j].get_con()), 3*cw[j%self.full_side]), end = "")  # Must convert to string to print list
@@ -516,17 +537,26 @@ class Puzzle():
                 print("|")  # Print end of line at end of each line
                 print(self.long_divider_line)  # Print long horizontal line between rows
             if self.single_line == False and (j + 1) % (self.part_side * self.full_side) == 0:
-                print(self.long_divider_line)  # Print second divider line
+                print(self.double_line)  # Print 'double' divider line
+            else:
+                print(self.long_divider_line)  # Print long horizontal line between rows
                 
 
     def display_puzzle_narrow_column(self):
         cw = self.calc_column_widths()  # Get max column widths
 
-        print(self.narrow_divider_line)  # Print top most line
+        if self.single_line == True:
+            print(self.narrow_divider_line)  # Print top most line
+        else:
+            print(self.narrow_divider_double_line)  # Print top most line
+
         for j in range(self.num_spots):
             print("|{:^{}}".format(str(self.puzz[j].short_list_string()), 2*cw[j%self.full_side] + 1), end = "")  # Must convert to string to print list
             if j % self.full_side == self.full_side - 1:
                 print("|")  # Print end of line at end of each line
+            if self.single_line == False and (j + 1) % (self.part_side * self.full_side) == 0:
+                print(self.narrow_divider_double_line)  # Print narrow horizontal line between rows
+            else:
                 print(self.narrow_divider_line)  # Print narrow horizontal line between rows
 
     def display_puzzle(self):
@@ -593,12 +623,12 @@ def main():
             p.calc_solved_counts()
             p.show_solved_unsolved_counts()
 
-        if entry == "4":
+        if entry == "5":
             guesses = p.unsolved_spot_guesses()
             for j in guesses:
                 print("Spot {} contains {}".format(j, guesses[j]))
 
-        if entry == "5":
+        if entry == "6":
             guesses = p.unsolved_spot_guesses()
             guesses_list = list(guesses.items())
             padded_guesses_list = copy.copy(guesses_list)
@@ -643,10 +673,6 @@ def main():
             g.show_state()
             g.calc_solved_counts()
             g.show_solved_unsolved_counts()
-
-        if entry == "6":
-            p.single_line = False  # Highlight internal grid boundaries with double line
-            p.display_puzzle()
 
 
 if __name__ == "__main__":
