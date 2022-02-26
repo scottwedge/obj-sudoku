@@ -11,7 +11,7 @@ import time  #DEBUG insert delays to help figure out repeated looping
 class UserInput():
     def __init__(self):
         self.play_game = True
-        self.column_width = "normal"  # Either "normal" or "narrow"; default to "normal"
+        self.normal_column_width = True  # "normal" == True (default);  "narrow" == False
         self.puzzle_selected = False
 
     def start_menu(self):
@@ -21,15 +21,15 @@ class UserInput():
         if entry == "1":
             return entry
         elif entry == "2":
-            self.column_width = "normal"
+            self.normal_column_width = True
         elif entry == "3":
-            self.column_width = "narrow"
+            self.normal_column_width = False  # For 'narrow' column width
         elif entry == "4":
             return entry
         elif entry == "5":
             return entry
         elif entry == "6":
-#            self.single_divider_line = False  # Highlight internal grid boundaries with double line
+#            self.single_line = False  # Highlight internal grid boundaries with double line
             return entry
         elif entry == "7":
             self.play_game = False
@@ -201,7 +201,7 @@ class Spot():  #
 class Puzzle():
     def __init__(self, initial_values, width):
         self.initial_values = initial_values
-        self.column_width_type = width  # set in UserInput.start_menu
+        self.normal_column_width = width  # set in UserInput.start_menu
         self.num_spots = len(self.initial_values)  # Handle both 9x9 or 16x16 puzzle
         self.full_side = int(self.num_spots ** 0.5)  # Handle both 9x9 or 16x16 puzzle
         self.part_side = int(self.num_spots ** 0.25)  # Handle both 9x9 or 16x16 puzzle
@@ -211,7 +211,8 @@ class Puzzle():
         self.num_possible_values = self.num_spots ** 2  # Initialize to largest possible value
         self.narrow_divider_line = "+-+-+-+-+-+-+-+-+-+"  # Initialize value
         self.long_divider_line = "+--+--+--+--+--+--+--+--+--+"  # Initialize value
-        self.single_divider_line = True  # Highlight internal grid boundaries with single or double line
+        self.double_divider_line = "++===+===+===++"  # Initialize value
+        self.single_line = True  # Highlight internal grid boundaries with single or double line
         self.solved_spots = -1  # Initialize to invalid value
         self.unsolved_spots = -1  # Initialize to invalid value
         self.unsolved_combinations_count = -1  # Initialize to invalid value
@@ -506,7 +507,7 @@ class Puzzle():
         cw = self.calc_column_widths()  # Get max column widths and create divider lines
 
         print(self.long_divider_line)  # Print top most line
-        if self.single_divider_line == False:
+        if self.single_line == False:
             print(self.long_divider_line)  # Print second top most line
 
         for j in range(self.num_spots):
@@ -514,7 +515,7 @@ class Puzzle():
             if j % self.full_side == self.full_side - 1:
                 print("|")  # Print end of line at end of each line
                 print(self.long_divider_line)  # Print long horizontal line between rows
-            if self.single_divider_line == False and (j + 1) % (self.part_side * self.full_side) == 0:
+            if self.single_line == False and (j + 1) % (self.part_side * self.full_side) == 0:
                 print(self.long_divider_line)  # Print second divider line
                 
 
@@ -529,9 +530,9 @@ class Puzzle():
                 print(self.narrow_divider_line)  # Print narrow horizontal line between rows
 
     def display_puzzle(self):
-        if self.column_width_type == "normal":  # Determine if narrow or normal columns 
+        if self.normal_column_width == True:  # Determine if narrow or normal columns 
             self.display_puzzle_normal_column()
-        elif self.column_width_type == "narrow":  # Determine if narrow or normal columns 
+        elif self.normal_column_width == False:  # Determine if narrow or normal columns 
             self.display_puzzle_narrow_column()
         else:
             pass  # Invalid condition
@@ -579,7 +580,7 @@ def main():
         if entry == "1":
             ui.puzzle_selected = True
             chosen_puzzle = ui.puzzle_menu()
-            width = ui.column_width
+            width = ui.normal_column_width
     
             p = Puzzle(chosen_puzzle, width)
     
@@ -644,7 +645,7 @@ def main():
             g.show_solved_unsolved_counts()
 
         if entry == "6":
-            p.single_divider_line = False  # Highlight internal grid boundaries with double line
+            p.single_line = False  # Highlight internal grid boundaries with double line
             p.display_puzzle()
 
 
