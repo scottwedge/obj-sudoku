@@ -151,6 +151,7 @@ class Spot():  #
     def rem(self, val):
         self.val = val
         con = self.get_con()
+        print("DEBUG __________________", con)  #DEBUG
         con.remove(self.val)
         self.set_con(con)
 #        print("DEBUG K contents now {}".format(self.puzz[k].get_con()))
@@ -546,10 +547,24 @@ class Puzzle():
                 possible_guess[j]= self.puzz[j].get_con()
         return possible_guess
 
+    def solve_all(self):
+        self.solve_row_singles()
+        after_rows_solving_total = self.calc_num_possible_values()
+        self.solve_column_singles()
+        after_columns_solving_total = self.calc_num_possible_values()
+        self.solve_grid_singles()
+        after_grids_solving_total = self.calc_num_possible_values()
+#        print("After row solving total = {}".format(after_rows_solving_total))  #DEBUG
+#        print("After column solving total = {}".format(after_columns_solving_total))  #DEBUG
+#        print("After grid solving total = {}".format(after_grids_solving_total))  #DEBUG
+#        print("PROGRESS STATE = {}".format(self.making_progress))  #DEBUG
+        self.solve_pairs()
+
 def main():
    
     ui = UserInput()
     while ui.play_game == True:  # Play game until quit
+
         entry = ui.start_menu()  # Choose option in Starting menu
     
         if entry == "1":
@@ -558,24 +573,12 @@ def main():
             width = ui.column_width
     
             p = Puzzle(chosen_puzzle, width)
-    #    print("Puzzle solving progress is: {}".format(p.making_progress))  # Debug
     
             while p.making_progress == True:
-                p.solve_row_singles()
-                after_rows_solving_total = p.calc_num_possible_values()
-                p.solve_column_singles()
-                after_columns_solving_total = p.calc_num_possible_values()
-                p.solve_grid_singles()
-                after_grids_solving_total = p.calc_num_possible_values()
-    #        print("After row solving total = {}".format(after_rows_solving_total))  # DEBUG
-    #        print("After column solving total = {}".format(after_columns_solving_total))  # DEBUG
-    #        print("After grid solving total = {}".format(after_grids_solving_total))  # DEBUG
-    #        print("PROGRESS STATE = {}".format(p.making_progress))  # DEBUG
-                p.solve_pairs()
+                p.solve_all()
     
             p.display_puzzle()
             print()
-    #        p.display_puzzle_narrow_column()
             p.show_state()
             p.calc_solved_counts()
             p.show_solved_unsolved_counts()
@@ -616,6 +619,21 @@ def main():
             guess_value = ui.guess_unresolved_value(guesses, spot_entry)  # Select value for guess
 
             g = copy.copy(p)  # Make copy of stalled puzzle; try guess on copy
+            print("OLD VALUE", g.puzz[spot_entry].get_con())  #DEBUG  # get old value
+            g.puzz[spot_entry].set_con(guess_value)   # Set new value
+            g.puzz[spot_entry].set_known(True)   # Set to True
+            g.making_progress = True  # Must switch from False
+            print("NEW VALUE", g.puzz[spot_entry].get_con())  #DEBUG  # get NEW value
+
+            while g.making_progress == True:
+                g.solve_all()
+    
+            g.display_puzzle()
+            print()
+            g.show_state()
+            g.calc_solved_counts()
+            g.show_solved_unsolved_counts()
+
 
 
 if __name__ == "__main__":
