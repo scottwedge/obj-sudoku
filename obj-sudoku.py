@@ -17,7 +17,7 @@ class UserInput():
     def start_menu(self):
         print()  # Spacing blank line
         print("Please choose one of the following options:")
-        entry = input("1. Select puzzle to solve\n2. Solve puzzle\n3. Show puzzle\n4. Display puzzle with normal column width (default)\n5. Display puzzle with narrow column width\n6. Display puzzle with double lines around internal grids\n7. List unresolved spots and their possible values\n8. Select a spot and try one of its possible values\n10. Quit game\nEnter selection: ")
+        entry = input("1. Select puzzle\n2. Solve puzzle\n3. Show puzzle\n4. Display puzzle with normal column width (default)\n5. Display puzzle with narrow column width\n6. Display puzzle with double lines around internal grids\n7. List unresolved spots and their possible values\n8. Select a spot and try one of its possible values\n10. Quit game\nEnter selection: ")
         if entry == "1":  # Select puzzle
             return entry
         elif entry == "2":  # Solve puzzle
@@ -28,7 +28,7 @@ class UserInput():
             self.normal_column_width = True
         elif entry == "5":  # Use narrow column width  (not default)
             self.normal_column_width = False  # For 'narrow' column width
-        elif entry == "6":  # Use double lines (++======++ or ||) around internal grids (not default)
+        elif entry == "6":  # Use double lines (++======++ or ||) around internal grids
             self.use_single_line = False  # Highlight internal grid boundaries with double line
         elif entry == "7":  # List unresolved spots and their values
             return entry
@@ -488,6 +488,8 @@ class Puzzle():
                     cw[col] = l
         self.create_normal_divider_line(cw)  # Create divider line for normal column width
         self.create_narrow_divider_line(cw)  # Create divider line for narrow column width
+        self.create_normal_divider_double_line(cw)  # Create double divider for normal column width
+        self.create_narrow_divider_double_line(cw)  # Create double divider for narrow column width
         return cw
 
     def create_normal_divider_line(self, cw):  
@@ -497,14 +499,18 @@ class Puzzle():
         for j in self.cw:
              normal_line += + 3 * self.cw[j] * '-' + "+"  # Want three '-' for every number in grid
         self.normal_divider_line = normal_line
+        print("DEBUG_________ created self.normal_divider_line")
+        print("DEBUG__", self.normal_divider_line)
 
     def create_normal_divider_double_line(self, cw):  
         # Line has '++' at internal grid intersection and '=' in between for normal width columns puzzle
         self.cw = cw
         double_line = "++"  # First characters
         for j in self.cw:
-             long_line +=  3 * self.cw[j] * '=' + "+"  # Want three '=' for every number in grid
-        self.double_line = double_line
+             double_line +=  3 * self.cw[j] * '=' + "+"  # Want three '=' for every number in grid
+        self.normal_divider_double_line = double_line
+        print("DEBUG_________ created self.normal_divider_double_line")
+        print("DEBUG__", self.normal_divider_double_line)
 
     def create_narrow_divider_line(self, cw):  
         # Line has '+' at every intersection and '-' in between - for narrow width columns puzzle
@@ -513,21 +519,26 @@ class Puzzle():
         for j in self.cw:
              narrow_line += + (2 * self.cw[j] + 1) * '-' + "+"  #Dh  Want two '-' plus one for every number in grid
         self.narrow_divider_line = narrow_line
+        print("DEBUG_________ created self.narrow_divider_line")
+        print("DEBUG__", self.narrow_divider_line)
 
     def create_narrow_divider_double_line(self, cw):  
         # Line has '++' at every internal grid intersection and '=' in between for narrow width columns puzzle
         self.cw = cw
-        narrow_line = "++"  # First characters
+        double_line = "++"  # First characters
         for j in self.cw:
-             narrow_line += + (2 * self.cw[j] + 1) * '=' + "+"  #Dh  Want two '= plus one for every number in grid
-        self.narrow_divider_line = narrow_line
-
+             double_line += + (2 * self.cw[j] + 1) * '=' + "+"  #Dh  Want two '= plus one for every number in grid
+        self.narrow_divider_double_line = double_line
+        print("DEBUG_________ created self.narrow_divider_double_line")
+        print("DEBUG__", self.narrow_divider_double_line)
 
 
     def display_puzzle_normal_column(self):
         cw = self.calc_column_widths()  # Get max column widths and create divider lines
-
-        self.p_divider_line(-1)  # Determine if print normal/wide column single/double divider line
+        self.p_divider_line(-1)  # Print top-most divider line
+        print("DEBUG ______ just printed topmost line")  #DEBUG
+        print("DEBUG ______ normal_column_width = {}".format(self.normal_column_width)) #DEBUG 
+        print("DEBUG _____ use_single_line = {}".format(self.use_single_line))  #DEBUG
 
         for j in range(self.num_spots):
             print("|{:^{}}".format(str(self.puzz[j].get_con()), 3*cw[j%self.full_side]), end = "")  # Must convert to string to print list
@@ -539,30 +550,22 @@ class Puzzle():
     def display_puzzle_narrow_column(self):
         cw = self.calc_column_widths()  # Get max column widths
 
-        if self.use_single_line == True:
-            print(self.narrow_divider_line)  # Print top most line
-        else:
-            print(self.narrow_divider_double_line)  # Print top most line
+        self.p_divider_line(-1)
 
         for j in range(self.num_spots):
             print("|{:^{}}".format(str(self.puzz[j].short_list_string()), 2*cw[j%self.full_side] + 1), end = "")  # Must convert to string to print list
             if j % self.full_side == self.full_side - 1:
                 print("|")  # Print end of line at end of each line
-            if self.use_single_line == False and (j + 1) % (self.part_side * self.full_side) == 0:
-                print(self.narrow_divider_double_line)  # Print narrow horizontal line between rows
-            else:
-                print(self.narrow_divider_line)  # Print narrow horizontal line between rows
+                self.p_divider_line(j)
 
     def display_puzzle(self):
-        if self.normal_column_width == True:  # Determine if narrow or normal columns 
+        if self.normal_column_width == True:  # Determine if normal columns 
             self.display_puzzle_normal_column()
-        elif self.normal_column_width == False:  # Determine if narrow or normal columns 
+        else:  # Determine if narrow columns 
             self.display_puzzle_narrow_column()
-        else:
-            pass  # Invalid condition
 
     def p_divider_line(self, j):  # Determine if print normal/wide column single/double divider line
-        if self.use_single_line == False and (j + 1) % (self.part_side * self.full_side) == 0:
+        if self.use_single_line == False and (j + 1) % (self.part_side ** 3) == 0:
             self.p_double_line(j)  # print double line
         else:
             self.p_single_line(j)  # print single line
@@ -632,10 +635,10 @@ def main():
 
         if entry == "3":  # Show
             p.display_puzzle()
-            print()
-            p.show_state()
-            p.calc_solved_counts()
-            p.show_solved_unsolved_counts()
+#            print()
+#            p.show_state()
+#            p.calc_solved_counts()
+#            p.show_solved_unsolved_counts()
 
         if entry == "7":
             guesses = p.unsolved_spot_guesses()
