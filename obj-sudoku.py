@@ -517,7 +517,11 @@ class Puzzle():
         self.cw = cw
         double_line = "++"  # First characters
         for j in self.cw:
-             double_line +=  3 * self.cw[j] * '=' + "+"  # Want three '=' for every number in grid
+            if (j+1) % self.part_side == 0:
+                double_line +=  3 * self.cw[j] * '=' + "++"  # Want '++' at internal grid intersection
+            else:
+                double_line +=  3 * self.cw[j] * '=' + "+"  # Want three '=' for every number in grid
+                
         self.normal_divider_double_line = double_line
 
     def create_narrow_divider_line(self, cw):  
