@@ -494,9 +494,22 @@ class Puzzle():
     def create_normal_divider_line(self, cw):  
         # Line has '+' at every intersection and '-' in between - for normal width columns puzzle
         self.cw = cw
-        normal_line = "+"  # First character
+        if self.use_single_line == True:
+            normal_line = "+"  # First character
+        else:
+            normal_line = "++"  # First character
+
         for j in self.cw:
-             normal_line += + 3 * self.cw[j] * '-' + "+"  # Want three '-' for every number in grid
+            if self.use_single_line == True:             
+                normal_line += + 3 * self.cw[j] * '-' + "+"  # Want three '-' for every number in grid
+            else:  # use_single_line == False
+                if (j+1) % self.part_side == 0:
+                    normal_line += + 3 * self.cw[j] * '-' + "++"  # grid intersection is '+'
+                else:
+                    normal_line += + 3 * self.cw[j] * '-' + "+"  # grid intersection is '++'
+          
+
+ 
         self.normal_divider_line = normal_line
 
     def create_normal_divider_double_line(self, cw):  
@@ -529,10 +542,19 @@ class Puzzle():
         self.p_divider_line(-1)  # Print top-most divider line
 
         for j in range(self.num_spots):
-            print("|{:^{}}".format(str(self.puzz[j].get_con()), 3*cw[j%self.full_side]), end = "")  # Must convert to string to print list
-            if (j+1) % self.full_side == 0:
-                print("|")  # Print end of line at end of each line
-                self.p_divider_line(j)  # Determine if print normal/wide column single/double divider line
+            if self.use_single_line == False and (j % self.part_side == 0):
+                print("||{:^{}}".format(str(self.puzz[j].get_con()), 3*cw[j%self.full_side]), end = "")  # Must convert to string to print list
+            else:
+                print("|{:^{}}".format(str(self.puzz[j].get_con()), 3*cw[j%self.full_side]), end = "")  # Must convert to string to print list
+                if (j+1) % self.full_side == 0 and self.use_single_line == False:
+                    print("||")  # Print end of line at end of each line
+                    self.p_divider_line(j)  # Determine if print normal/wide column single/double divider line
+                elif (j+1) % self.full_side == 0 and self.use_single_line == True:
+                    print("|")  # Print end of line at end of each line
+                    self.p_divider_line(j)  # Determine if print normal/wide column single/double divider line
+                else:
+                    pass
+             
                 
 
     def display_puzzle_narrow_column(self):
