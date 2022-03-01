@@ -17,7 +17,7 @@ class UserInput():
     def start_menu(self):
         print()  # Spacing blank line
         print("Please choose one of the following options:")
-        entry = input("1. Select puzzle\n2. Solve puzzle\n3. Show puzzle\n4. Display puzzle with normal column width (default)\n5. Display puzzle with narrow column width\n6. Display puzzle with single lines around internal grids\n7. Display puzzle with double lines around internal grids\n8. List unresolved spots and their possible values\n9. Select a spot and try one of its possible values\n10. Quit game\nEnter selection: ")
+        entry = input("1. Select puzzle\n2. Solve puzzle\n3. Show puzzle\n4. Display puzzle with normal column width (default)\n5. Display puzzle with narrow column width\n6. Display puzzle with single lines around internal grids (default)\n7. Display puzzle with double lines around internal grids\n8. List unresolved spots and their possible values\n9. Select a spot and try one of its possible values\n10. Quit game\nEnter selection: ")
         if entry == "1":  # Select puzzle
             return entry
         elif entry == "2":  # Solve puzzle
@@ -647,6 +647,62 @@ class Puzzle():
         print("After grid solving total = {}".format(after_grids_solving_total))  #DEBUG
         print("PROGRESS STATE = {}".format(self.making_progress))  #DEBUG
         self.solve_pairs()
+
+    def check_sanity(self):  # Determine if puzzle still sane after guess a value for spot(s)
+        # Verify that maximum of only one count of every value in every row, column or internal grid
+        # Otherwise the grid is insane and the last guess was incorrect
+        sane_row = self.check_row_sanity()
+        sane_column = self.check_column_sanity()
+        sane_grid = self.check_grid_sanity()
+        return sane_row and sane_column and sane_grid  # False if any are False
+
+    def reset_counters(self):  # Reset all dictionary values to zero
+        d = dict()
+        for j in range(self.full_side):
+            d[j] = 0
+        return d
+
+    def check_counters(self, count):
+        sane = True
+        self.count = count
+        for j in range(len(count)):
+            if count[j] > 1:
+                sane = False
+        return sane
+
+    def check_row_sanity(self):
+        # For every row, reset counts, then cycle through every spot and check each row for a value with >1 count.
+        for row in self.full_side: # for every row
+            sanity = True
+            count = self.reset_counters()  # reset counters
+            for j in self.num_spots:  # for every spot in puzzle
+                if row == self.puzz[j].get_row() and self.puzz[k].get_known() == True:
+                    count[self.puzz[j].get_con()] += 1  # Increment count if known value and in matching row
+            sanity = sanity and self.check_counters(count) 
+        return sanity
+
+    def check_column_sanity(self):
+        # For every column, reset counts, then cycle through every spot and check each column for a value with >1 count.
+        for column in self.full_side: # for every column
+            sanity = True
+            count = self.reset_counters()  # reset counters
+            for j in self.num_spots:  # for every spot in puzzle
+                if column == self.puzz[j].get_column() and self.puzz[k].get_known() == True:
+                    count[self.puzz[j].get_con()] += 1  # Increment count if known value and in matching row
+            sanity = sanity and self.check_counters(count) 
+        return sanity
+
+    def check_grid_sanity(self):
+        # For every grid, reset counts, then cycle through every spot and check each grid for a value with >1 count.
+        for grid in self.full_side: # for every grid
+            sanity = True
+            count = self.reset_counters()  # reset counters
+            for j in self.num_spots:  # for every spot in puzzle
+                if grid == self.puzz[j].get_grid() and self.puzz[k].get_known() == True:
+                    count[self.puzz[j].get_con()] += 1  # Increment count if known value and in matching row
+            sanity = sanity and self.check_counters(count) 
+        return sanity
+
 
 def main():
    
