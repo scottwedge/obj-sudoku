@@ -652,53 +652,67 @@ class Puzzle():
         # Verify that maximum of only one count of every value in every row, column or internal grid
         # Otherwise the grid is insane and the last guess was incorrect
         sane_row = self.check_row_sanity()
+        if sane_row:
+            print("Rows are sane")
+        else:
+            print("Rows are NOT sane")
+         
         sane_column = self.check_column_sanity()
+        if sane_column:
+            print("Columns are sane")
+        else:
+            print("Columns are NOT sane")
+
         sane_grid = self.check_grid_sanity()
+        if sane_grid:
+            print("Grids are sane")
+        else:
+            print("Grids are NOT sane")
         return sane_row and sane_column and sane_grid  # False if any are False
 
     def reset_counters(self):  # Reset all dictionary values to zero
         d = dict()
-        for j in range(self.full_side):
-            d[j] = 0
+        for j in range(self.full_side):  
+            d[j+1] = 0  # Counting values 1 - 9
         return d
 
     def check_counters(self, count):
         sane = True
         self.count = count
         for j in range(len(count)):
-            if count[j] > 1:
+            if self.count[j+1] > 1:
                 sane = False
         return sane
 
     def check_row_sanity(self):
         # For every row, reset counts, then cycle through every spot and check each row for a value with >1 count.
-        for row in self.full_side: # for every row
+        for row in range(self.full_side): # for every row
             sanity = True
             count = self.reset_counters()  # reset counters
-            for j in self.num_spots:  # for every spot in puzzle
-                if row == self.puzz[j].get_row() and self.puzz[k].get_known() == True:
+            for j in range(self.num_spots):  # for every spot in puzzle
+                if row == self.puzz[j].get_row() and self.puzz[j].get_known() == True:
                     count[self.puzz[j].get_con()] += 1  # Increment count if known value and in matching row
             sanity = sanity and self.check_counters(count) 
         return sanity
 
     def check_column_sanity(self):
         # For every column, reset counts, then cycle through every spot and check each column for a value with >1 count.
-        for column in self.full_side: # for every column
+        for column in range(self.full_side): # for every column
             sanity = True
             count = self.reset_counters()  # reset counters
-            for j in self.num_spots:  # for every spot in puzzle
-                if column == self.puzz[j].get_column() and self.puzz[k].get_known() == True:
+            for j in range(self.num_spots):  # for every spot in puzzle
+                if column == self.puzz[j].get_column() and self.puzz[j].get_known() == True:
                     count[self.puzz[j].get_con()] += 1  # Increment count if known value and in matching row
             sanity = sanity and self.check_counters(count) 
         return sanity
 
     def check_grid_sanity(self):
         # For every grid, reset counts, then cycle through every spot and check each grid for a value with >1 count.
-        for grid in self.full_side: # for every grid
+        for grid in range(self.full_side): # for every grid
             sanity = True
             count = self.reset_counters()  # reset counters
-            for j in self.num_spots:  # for every spot in puzzle
-                if grid == self.puzz[j].get_grid() and self.puzz[k].get_known() == True:
+            for j in range(self.num_spots):  # for every spot in puzzle
+                if grid == self.puzz[j].get_grid() and self.puzz[j].get_known() == True:
                     count[self.puzz[j].get_con()] += 1  # Increment count if known value and in matching row
             sanity = sanity and self.check_counters(count) 
         return sanity
@@ -792,6 +806,7 @@ def main():
             g.show_state()
             g.calc_solved_counts()
             g.show_solved_unsolved_counts()
+            g.check_sanity()
 
 
 if __name__ == "__main__":
