@@ -17,7 +17,7 @@ class UserInput():
     def start_menu(self):
         print()  # Spacing blank line
         print("Please choose one of the following options:")
-        entry = input("1. Select puzzle\n2. Solve puzzle\n3. Show puzzle\n4. Display puzzle with normal column width (default)\n5. Display puzzle with narrow column width\n6. Display puzzle with single lines around internal grids (default)\n7. Display puzzle with double lines around internal grids\n8. List unresolved spots and their possible values\n9. Select a spot and try one of its possible values\n10. Quit game\nEnter selection: ")
+        entry = input("1. Select puzzle 2. Solve puzzle 3. Show puzzle 4. Display puzzle with normal column width (default)5. Display puzzle with narrow column width6. Display puzzle with single lines around internal grids (default)7. Display puzzle with double lines around internal grids8. List unresolved spots and their possible values9. Select a spot and try one of its possible values10. Check puzzle sanity\n11. Quit game\nEnter selection: ")
         if entry == "1":  # Select puzzle
             return entry
         elif entry == "2":  # Solve puzzle
@@ -36,7 +36,9 @@ class UserInput():
             return entry
         elif entry == "9":  # Select a spot and guess a value 
             return entry
-        elif entry == "10":  # Exit game
+        elif entry == "10":  # Sanity check puzzle
+            return entry
+        elif entry == "11":  # Exit game
             self.play_game = False
         else:
             pass
@@ -159,14 +161,24 @@ class Spot():  #
     def rem(self, val):
         self.val = val
         con = self.get_con()
-        con.remove(self.val)
+        print("DEBUG ___ con = {}; removing ___{}".format(con, self.val))  #DEBUG
+        
+        try:  #DBUG
+            con.remove(self.val)
+        except AttributeError:
+            pass 
+
         self.set_con(con)
 #        print("DEBUG K contents now {}".format(self.puzz[k].get_con()))
-        if len(self.get_con()) == 1 and isinstance(self.get_con(), list):
-            self.known = True  # If only one value in contents then value is known
-            for j in self.get_con():
-                self.set_con(j)  # Convert contents from list of one value to that one value 
-                                 # so that it matches format of initial known single values
+ 
+        try:  #DBUG
+            if len(self.get_con()) == 1 and isinstance(self.get_con(), list):
+                self.known = True  # If only one value in contents then value is known
+                for j in self.get_con():
+                    self.set_con(j)  # Convert contents from list of one value to that one value 
+                                     # so that it matches format of initial known single values
+        except TypeError:
+            pass
 
     def get_row(self):  # Row, column and grid coordinate values are set when initialized 
         return self.row  # and never change 
@@ -617,7 +629,7 @@ class Puzzle():
             print(self.narrow_divider_line)  # Print narrow double horizontal line between rows
 
     def show_state(self):
-        print(self.state)
+        print(self.state, "  ",  end = "")
 
     def show_solved_unsolved_counts(self):
         print("Solved spot count = {}. Unsolved spot count = {}.".format(self.solved_spots, self.unsolved_spots))
@@ -677,12 +689,13 @@ class Puzzle():
         return d
 
     def check_counters(self, count):
-        sane = True
+        sanity = True
         self.count = count
         for j in range(len(count)):
             if self.count[j+1] > 1:
-                sane = False
-        return sane
+                sanity = False
+                print("DEBUG______ SANITY is false for value {}: {}".format(sanity, j+1))
+        return sanity
 
     def check_row_sanity(self):
         # For every row, reset counts, then cycle through every spot and check each row for a value with >1 count.
@@ -807,6 +820,9 @@ def main():
             g.calc_solved_counts()
             g.show_solved_unsolved_counts()
             g.check_sanity()
+
+        if entry == "10":  # 
+            p.check_sanity()
 
 
 if __name__ == "__main__":
