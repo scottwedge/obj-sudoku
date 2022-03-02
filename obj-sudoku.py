@@ -694,38 +694,37 @@ class Puzzle():
         for j in range(len(count)):
             if self.count[j+1] > 1:
                 sanity = False
-                print("DEBUG______ SANITY is false for value {}: {}".format(sanity, j+1))
         return sanity
 
     def check_row_sanity(self):
         # For every row, reset counts, then cycle through every spot and check each row for a value with >1 count.
+        sanity = True
         for row in range(self.full_side): # for every row
-            sanity = True
             count = self.reset_counters()  # reset counters
             for j in range(self.num_spots):  # for every spot in puzzle
-                if row == self.puzz[j].get_row() and self.puzz[j].get_known() == True:
+                if (row == self.puzz[j].get_row()) and (self.puzz[j].get_known() == True):
                     count[self.puzz[j].get_con()] += 1  # Increment count if known value and in matching row
             sanity = sanity and self.check_counters(count) 
         return sanity
 
     def check_column_sanity(self):
         # For every column, reset counts, then cycle through every spot and check each column for a value with >1 count.
+        sanity = True
         for column in range(self.full_side): # for every column
-            sanity = True
             count = self.reset_counters()  # reset counters
             for j in range(self.num_spots):  # for every spot in puzzle
-                if column == self.puzz[j].get_column() and self.puzz[j].get_known() == True:
+                if (column == self.puzz[j].get_column()) and (self.puzz[j].get_known()) == True:
                     count[self.puzz[j].get_con()] += 1  # Increment count if known value and in matching row
             sanity = sanity and self.check_counters(count) 
         return sanity
 
     def check_grid_sanity(self):
         # For every grid, reset counts, then cycle through every spot and check each grid for a value with >1 count.
+        sanity = True
         for grid in range(self.full_side): # for every grid
-            sanity = True
             count = self.reset_counters()  # reset counters
             for j in range(self.num_spots):  # for every spot in puzzle
-                if grid == self.puzz[j].get_grid() and self.puzz[j].get_known() == True:
+                if (grid == self.puzz[j].get_grid()) and (self.puzz[j].get_known()) == True:
                     count[self.puzz[j].get_con()] += 1  # Increment count if known value and in matching row
             sanity = sanity and self.check_counters(count) 
         return sanity
