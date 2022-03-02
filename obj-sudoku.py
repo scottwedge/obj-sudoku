@@ -663,23 +663,23 @@ class Puzzle():
     def check_sanity(self):  # Determine if puzzle still sane after guess a value for spot(s)
         # Verify that maximum of only one count of every value in every row, column or internal grid
         # Otherwise the grid is insane and the last guess was incorrect
-        sane_row = self.check_row_sanity()
+        (sane_row, reason_row) = self.check_row_sanity()
         if sane_row:
             print("Rows are sane")
         else:
-            print("Rows are NOT sane")
+            print("Rows are NOT sane because {}".format(reason_row))
          
-        sane_column = self.check_column_sanity()
+        (sane_column, reason_column) = self.check_column_sanity()
         if sane_column:
             print("Columns are sane")
         else:
-            print("Columns are NOT sane")
+            print("Columns are NOT sane because {}".format(reason_column))
 
-        sane_grid = self.check_grid_sanity()
+        (sane_grid, reason_grid) = self.check_grid_sanity()
         if sane_grid:
             print("Grids are sane")
         else:
-            print("Grids are NOT sane")
+            print("Grids are NOT sane because {}".format(reason_grid))
         return sane_row and sane_column and sane_grid  # False if any are False
 
     def reset_counters(self):  # Reset all dictionary values to zero
@@ -699,13 +699,18 @@ class Puzzle():
     def check_row_sanity(self):
         # For every row, reset counts, then cycle through every spot and check each row for a value with >1 count.
         sanity = True
+        reason = ""  # Initial blank value
         for row in range(self.full_side): # for every row
             count = self.reset_counters()  # reset counters
             for j in range(self.num_spots):  # for every spot in puzzle
                 if (row == self.puzz[j].get_row()) and (self.puzz[j].get_known() == True):
                     count[self.puzz[j].get_con()] += 1  # Increment count if known value and in matching row
-            sanity = sanity and self.check_counters(count) 
-        return sanity
+                    if count[self.puzz[j].get_con()] > 1:
+                        sanity = False 
+                        reason = "More than one {} in row {}.".format(self.puzz[j].get_con(), row)
+                    
+#            sanity = sanity and self.check_counters(count) 
+        return (sanity, reason)
 
     def check_column_sanity(self):
         # For every column, reset counts, then cycle through every spot and check each column for a value with >1 count.
@@ -714,9 +719,13 @@ class Puzzle():
             count = self.reset_counters()  # reset counters
             for j in range(self.num_spots):  # for every spot in puzzle
                 if (column == self.puzz[j].get_column()) and (self.puzz[j].get_known()) == True:
-                    count[self.puzz[j].get_con()] += 1  # Increment count if known value and in matching row
-            sanity = sanity and self.check_counters(count) 
-        return sanity
+                    count[self.puzz[j].get_con()] += 1  # Increment count if known value and in matching column
+                    if count[self.puzz[j].get_con()] > 1:
+                        sanity = False 
+                        reason = "More than one {} in column {}.".format(self.puzz[j].get_con(), column)
+                    
+#            sanity = sanity and self.check_counters(count) 
+        return (sanity, reason)
 
     def check_grid_sanity(self):
         # For every grid, reset counts, then cycle through every spot and check each grid for a value with >1 count.
@@ -725,9 +734,14 @@ class Puzzle():
             count = self.reset_counters()  # reset counters
             for j in range(self.num_spots):  # for every spot in puzzle
                 if (grid == self.puzz[j].get_grid()) and (self.puzz[j].get_known()) == True:
-                    count[self.puzz[j].get_con()] += 1  # Increment count if known value and in matching row
-            sanity = sanity and self.check_counters(count) 
-        return sanity
+                    count[self.puzz[j].get_con()] += 1  # Increment count if known value and in matching grid
+                    if count[self.puzz[j].get_con()] > 1:
+                        sanity = False 
+                        reason = "More than one {} in grid {}.".format(self.puzz[j].get_con(), grid)
+                    
+#            sanity = sanity and self.check_counters(count) 
+        return (sanity, reason)
+
 
     def list_spot_and_guesses(self, guesses):
         self.guesses = guesses        
@@ -807,11 +821,11 @@ def main():
             guess_value = ui.guess_unresolved_value(guesses, spot_entry)  # Select value for guess
 
             g = copy.copy(p)  # Make copy of stalled puzzle; try guess on copy
-            print("OLD VALUE", g.puzz[spot_entry].get_con())  #DEBUG  # get old value
+#            print("OLD VALUE", g.puzz[spot_entry].get_con())  #DEBUG  # get old value
             g.puzz[spot_entry].set_con(guess_value)   # Set new value
             g.puzz[spot_entry].set_known(True)   # Set to True
             g.making_progress = True  # Must switch from False
-            print("NEW VALUE", g.puzz[spot_entry].get_con())  #DEBUG  # get NEW value
+#            print("NEW VALUE", g.puzz[spot_entry].get_con())  #DEBUG  # get NEW value
 
             while g.making_progress == True:
                 g.solve_all()
