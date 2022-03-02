@@ -17,7 +17,7 @@ class UserInput():
     def start_menu(self):
         print()  # Spacing blank line
         print("Please choose one of the following options:")
-        entry = input("1. Select puzzle 2. Solve puzzle 3. Show puzzle 4. Display puzzle with normal column width (default)5. Display puzzle with narrow column width6. Display puzzle with single lines around internal grids (default)7. Display puzzle with double lines around internal grids8. List unresolved spots and their possible values9. Select a spot and try one of its possible values10. Check puzzle sanity\n11. Quit game\nEnter selection: ")
+        entry = input("1. Select puzzle\n2. Solve puzzle\n3. Show puzzle\n4. Display puzzle with normal column width (default)\n5. Display puzzle with narrow column width\n6. Display puzzle with single lines around internal grids (default)\n7. Display puzzle with double lines around internal grids\n8. List unresolved spots and their possible values\n9. Select a spot and try one of its possible values\n10. Check puzzle sanity\n11. Quit game\nEnter selection: ")
         if entry == "1":  # Select puzzle
             return entry
         elif entry == "2":  # Solve puzzle
@@ -729,6 +729,32 @@ class Puzzle():
             sanity = sanity and self.check_counters(count) 
         return sanity
 
+    def list_spot_and_guesses(self, guesses):
+        self.guesses = guesses        
+        guesses_list = list(self.guesses.items())
+        padded_guesses_list = copy.copy(guesses_list)
+        l = len(guesses_list)
+        excess = l % 4
+        if excess != 0:
+            num_padding = 4 - excess  # Pad the list with blanks since print four values per line
+            for j in range(num_padding):
+                padded_guesses_list.append(("",""))
+ 
+        print("Number of unresolved spots is {}.".format(l))
+        print()  # Spacer line
+        print("Unresolved spots and contents are:")
+        w1 = 5  # Format width for spot number
+        w2 = 18  # Format width for contents number
+ 
+        t1 = "Spot"
+        t2 = "Contents"
+        print("{:{}}{:{}}{:{}}{:{}}{:{}}{:{}}{:{}}{:{}}".format(str(t1), w1,str(t2), w2, str(t1), w1, str(t2), w2, str(t1), w1, str(t2), w2, str(t1), w1, str(t2), w2))
+        for j in range(0, len(padded_guesses_list), 4):  # Print four spots per line
+            (a, b) = padded_guesses_list[j]
+            (c, d) = padded_guesses_list[j + 1]
+            (e, f) = padded_guesses_list[j + 2]
+            (g, h) = padded_guesses_list[j + 3]
+            print("{:{}}{:{}}{:{}}{:{}}{:{}}{:{}}{:{}}{:{}}".format(str(a), w1,str(b), w2, str(c), w1, str(d), w2, str(e), w1, str(f), w2, str(g), w1, str(h), w2))
 
 def main():
    
@@ -775,30 +801,7 @@ def main():
 
         if entry == "9":
             guesses = p.unsolved_spot_guesses()
-            guesses_list = list(guesses.items())
-            padded_guesses_list = copy.copy(guesses_list)
-            l = len(guesses_list)
-            excess = l % 4
-            if excess != 0:
-                num_padding = 4 - excess  # Pad the list with blanks since print four values per line
-                for j in range(num_padding):
-                    padded_guesses_list.append(("",""))
-
-            print("Number of unresolved spots is {}.".format(l))
-            print()  # Spacer line
-            print("Unresolved spots and contents are:")
-            w1 = 5  # Format width for spot number
-            w2 = 18  # Format width for contents number
-
-            t1 = "Spot"
-            t2 = "Contents"
-            print("{:{}}{:{}}{:{}}{:{}}{:{}}{:{}}{:{}}{:{}}".format(str(t1), w1,str(t2), w2, str(t1), w1, str(t2), w2, str(t1), w1, str(t2), w2, str(t1), w1, str(t2), w2))
-            for j in range(0, len(padded_guesses_list), 4):  # Print four spots per line
-                (a, b) = padded_guesses_list[j]
-                (c, d) = padded_guesses_list[j + 1]
-                (e, f) = padded_guesses_list[j + 2]
-                (g, h) = padded_guesses_list[j + 3]
-                print("{:{}}{:{}}{:{}}{:{}}{:{}}{:{}}{:{}}{:{}}".format(str(a), w1,str(b), w2, str(c), w1, str(d), w2, str(e), w1, str(f), w2, str(g), w1, str(h), w2))
+            p.list_spot_and_guesses(guesses)
 
             spot_entry = ui.choose_unresolved_spot(guesses)  # Select spot for guess
             guess_value = ui.guess_unresolved_value(guesses, spot_entry)  # Select value for guess
