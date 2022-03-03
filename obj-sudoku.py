@@ -715,6 +715,7 @@ class Puzzle():
     def check_column_sanity(self):
         # For every column, reset counts, then cycle through every spot and check each column for a value with >1 count.
         sanity = True
+        reason = ""  # Initial blank value
         for column in range(self.full_side): # for every column
             count = self.reset_counters()  # reset counters
             for j in range(self.num_spots):  # for every spot in puzzle
@@ -730,6 +731,7 @@ class Puzzle():
     def check_grid_sanity(self):
         # For every grid, reset counts, then cycle through every spot and check each grid for a value with >1 count.
         sanity = True
+        reason = ""  # Initial blank value
         for grid in range(self.full_side): # for every grid
             count = self.reset_counters()  # reset counters
             for j in range(self.num_spots):  # for every spot in puzzle
@@ -776,14 +778,14 @@ class Puzzle():
         self.spot = spot
         self.value = value
 
-        reply = input("Do you want to revert? Y/N")
-        if reply == "Y":
+        reply = input("Do you want to revert yY/nN? ")
+        if reply == ("Y" or "y"):
             self.g = self.p
         else:
             pass
 
-        reply = input("Do you want to remove value {} from spot {} since it made puzzle insane? Y/N".format(spot, value))
-        if reply == "Y":
+        reply = input("Do you want to remove value {} from spot {} since it made puzzle insane yY/nN? ".format(spot, value))
+        if reply == ("Y" or "y"):
             p.puzz[spot].rem(value)
         else:
             pass
