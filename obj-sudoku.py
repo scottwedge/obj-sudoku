@@ -770,15 +770,15 @@ class Puzzle():
             (g, h) = padded_guesses_list[j + 3]
             print("{:{}}{:{}}{:{}}{:{}}{:{}}{:{}}{:{}}{:{}}".format(str(a), w1,str(b), w2, str(c), w1, str(d), w2, str(e), w1, str(f), w2, str(g), w1, str(h), w2))
 
-    def revert_and_edit(self, g, spot, value):
+    def revert_and_edit(self, p, spot, value):
         # Revert to pre-guess version of puzzle
-        self.g = g
+        self.p = p
         self.spot = spot
         self.value = value
 
         reply = input("Do you want to revert? Y/N")
         if reply == "Y":
-            self.g = p
+            self.g = self.p
         else:
             pass
 
@@ -859,11 +859,7 @@ def main():
 
             sane = g.check_sanity()
             if not sane:
-                print("Would you like to revert to previous version of puzzle?")
-                reply = input("Y/N: ")
-            if reply == "Y":
-                g = p
-                g.display_puzzle() 
+                g.revert_and_edit(p, spot_entry, guess_value)
  
 
         if entry == "10":  # 
