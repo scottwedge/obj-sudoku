@@ -770,6 +770,27 @@ class Puzzle():
             (g, h) = padded_guesses_list[j + 3]
             print("{:{}}{:{}}{:{}}{:{}}{:{}}{:{}}{:{}}{:{}}".format(str(a), w1,str(b), w2, str(c), w1, str(d), w2, str(e), w1, str(f), w2, str(g), w1, str(h), w2))
 
+    def revert_and_edit(self, g, spot, value):
+        # Revert to pre-guess version of puzzle
+        self.g = g
+        self.spot = spot
+        self.value = value
+
+        reply = input("Do you want to revert? Y/N")
+        if reply == "Y":
+            self.g = p
+        else:
+            pass
+
+        reply = input("Do you want to remove value {} from spot {} since it made puzzle insane? Y/N".format(spot, value))
+        if reply == "Y":
+            p.puzz[spot].rem(value)
+        else:
+            pass
+
+        return self.g
+
+
 def main():
    
     ui = UserInput()
@@ -820,7 +841,7 @@ def main():
             spot_entry = ui.choose_unresolved_spot(guesses)  # Select spot for guess
             guess_value = ui.guess_unresolved_value(guesses, spot_entry)  # Select value for guess
 
-            g = copy.copy(p)  # Make copy of stalled puzzle; try guess on copy
+            g = copy.deepcopy(p)  # Make copy of stalled puzzle; try guess on copy  # Need deepcopy
 #            print("OLD VALUE", g.puzz[spot_entry].get_con())  #DEBUG  # get old value
             g.puzz[spot_entry].set_con(guess_value)   # Set new value
             g.puzz[spot_entry].set_known(True)   # Set to True
@@ -835,7 +856,15 @@ def main():
             g.show_state()
             g.calc_solved_counts()
             g.show_solved_unsolved_counts()
-            g.check_sanity()
+
+            sane = g.check_sanity()
+            if not sane:
+                print("Would you like to revert to previous version of puzzle?")
+                reply = input("Y/N: ")
+            if reply == "Y":
+                g = p
+                g.display_puzzle() 
+ 
 
         if entry == "10":  # 
             p.check_sanity()
