@@ -161,7 +161,7 @@ class Spot():  #
     def rem(self, val):
         self.val = val
         con = self.get_con()
-        print("DEBUG ___ con = {}; removing ___{}".format(con, self.val))  #DEBUG
+#        print("DEBUG ___ con = {}; removing ___{}".format(con, self.val))  #DEBUG
         
         try:  #DBUG
             con.remove(self.val)
@@ -654,9 +654,9 @@ class Puzzle():
         after_columns_solving_total = self.calc_num_possible_values()
         self.solve_grid_singles()
         after_grids_solving_total = self.calc_num_possible_values()
-        print("After row solving total = {}".format(after_rows_solving_total))  #DEBUG
-        print("After column solving total = {}".format(after_columns_solving_total))  #DEBUG
-        print("After grid solving total = {}".format(after_grids_solving_total))  #DEBUG
+#        print("After row solving total = {}".format(after_rows_solving_total))  #DEBUG
+#        print("After column solving total = {}".format(after_columns_solving_total))  #DEBUG
+#        print("After grid solving total = {}".format(after_grids_solving_total))  #DEBUG
         print("PROGRESS STATE = {}".format(self.making_progress))  #DEBUG
         self.solve_pairs()
 
@@ -787,9 +787,9 @@ class Puzzle():
         self.value = value
         reply = input("Remove value {} from spot {} (since it made puzzle insane)?  yY/nN: ".format(value, spot))
         if reply == "Y" or reply == "y":
-            print("DEBUG___ value before =  {}".format(self.puzz[self.spot].get_con()))  #DEBUG
+#            print("DEBUG___ value before =  {}".format(self.puzz[self.spot].get_con()))  #DEBUG
             self.puzz[self.spot].rem(self.value)
-            print("DEBUG___ value after =  {}".format(self.puzz[self.spot].get_con()))  #DEBUG
+#            print("DEBUG___ value after =  {}".format(self.puzz[self.spot].get_con()))  #DEBUG
         else:
             pass  # Do nothing
 
@@ -872,12 +872,12 @@ def main():
             else:  
                 g.revert(p)
                 p.remove_invalid(spot_entry, guess_value) 
-            print("P puzzle follows ___________________:")  #DEBUG
-            print("P=", p)  #DEBUG
-            print("G=", g)  #DEBUG
-            p.display_puzzle()  #DEBUG
-            g.display_puzzle()  #DEBUG
-            print("G puzzle preceeds ___________________:")  #DEBUG
+#            print("P puzzle follows ___________________:")  #DEBUG
+#            print("P=", p)  #DEBUG
+#            print("G=", g)  #DEBUG
+#            p.display_puzzle()  #DEBUG
+#            g.display_puzzle()  #DEBUG
+#            print("G puzzle preceeds ___________________:")  #DEBUG
 
         if entry == "10":  # 
             p.check_sanity()
