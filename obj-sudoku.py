@@ -772,25 +772,26 @@ class Puzzle():
             (g, h) = padded_guesses_list[j + 3]
             print("{:{}}{:{}}{:{}}{:{}}{:{}}{:{}}{:{}}{:{}}".format(str(a), w1,str(b), w2, str(c), w1, str(d), w2, str(e), w1, str(f), w2, str(g), w1, str(h), w2))
 
-    def revert_and_edit(self, p, spot, value):
+    def revert(self, p):
         # Revert to pre-guess version of puzzle
         self.p = p
+
+        reply = input("Do you want to revert to pre-guess puzzle values?  yY/nN: ")
+        if reply == "N" or reply == "n":
+            self.p = copy.deepcopy(self.g)
+        else:
+            pass  # Future references to 'p' instead of 'g'
+
+    def remove_invalid(self, spot, value):
         self.spot = spot
         self.value = value
-
-        reply = input("Do you want to revert yY/nN? ")
-        if reply == ("Y" or "y"):
-            self.g = self.p
+        reply = input("Remove value {} from spot {} (since it made puzzle insane)?  yY/nN: ".format(value, spot))
+        if reply == "Y" or reply == "y":
+            print("DEBUG___ value before =  {}".format(self.puzz[self.spot].get_con()))  #DEBUG
+            self.puzz[self.spot].rem(self.value)
+            print("DEBUG___ value after =  {}".format(self.puzz[self.spot].get_con()))  #DEBUG
         else:
-            pass
-
-        reply = input("Do you want to remove value {} from spot {} since it made puzzle insane yY/nN? ".format(spot, value))
-        if reply == ("Y" or "y"):
-            p.puzz[spot].rem(value)
-        else:
-            pass
-
-        return self.g
+            pass  # Do nothing
 
 
 def main():
@@ -837,6 +838,12 @@ def main():
                 print("Spot {} contains {}".format(j, guesses[j]))
 
         if entry == "9":
+            # In 'p', list unresolved spots and their content and prompt user to select a guess
+            # Make a copy 'g' of the current puzzle and then alter copy with the guess
+            # Automatically restart solving the puzzle and check result for sanity
+            # If insane, offer to revert to previous version 'p' of puzzle and delete value that
+            #   made puzzle insane.
+            # If sane, overwrite original 'p' with 'g' and continue guessing
             guesses = p.unsolved_spot_guesses()
             p.list_spot_and_guesses(guesses)
 
@@ -847,7 +854,7 @@ def main():
 #            print("OLD VALUE", g.puzz[spot_entry].get_con())  #DEBUG  # get old value
             g.puzz[spot_entry].set_con(guess_value)   # Set new value
             g.puzz[spot_entry].set_known(True)   # Set to True
-            g.making_progress = True  # Must switch from False
+            g.making_progress = True  # Must switch from False or will not try to solve again
 #            print("NEW VALUE", g.puzz[spot_entry].get_con())  #DEBUG  # get NEW value
 
             while g.making_progress == True:
@@ -860,9 +867,17 @@ def main():
             g.show_solved_unsolved_counts()
 
             sane = g.check_sanity()
-            if not sane:
-                g.revert_and_edit(p, spot_entry, guess_value)
- 
+            if sane:  # So overwrite original 'p' with updated with guess 'g' version of puzzle
+                p = copy.deepcopy(g)
+            else:  
+                g.revert(p)
+                p.remove_invalid(spot_entry, guess_value) 
+            print("P puzzle follows ___________________:")  #DEBUG
+            print("P=", p)  #DEBUG
+            print("G=", g)  #DEBUG
+            p.display_puzzle()  #DEBUG
+            g.display_puzzle()  #DEBUG
+            print("G puzzle preceeds ___________________:")  #DEBUG
 
         if entry == "10":  # 
             p.check_sanity()
