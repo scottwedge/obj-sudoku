@@ -248,7 +248,7 @@ class Puzzle():
         self.narrow_divider_double_line = "++===+===+===++"  # Initialize value
         self.normal_divider_double_line = "++=====+=====+=====++"  # Initialize value
         self.use_single_line = True  # Highlight internal grid boundaries with single (default) line
-        self.list_brackets = True  # Default display values as '[4, 5]'
+        self.show_list_brackets = True  # Default display values as '[4, 5]'
         self.solved_spots = -1  # Initialize to invalid value
         self.unsolved_spots = -1  # Initialize to invalid value
         self.unsolved_combinations_count = -1  # Initialize to invalid value
@@ -587,7 +587,7 @@ class Puzzle():
 
     def display_puzzle_normal_column(self):
         cw = self.calc_column_widths()  # Get max column widths and create divider lines
-        self.p_divider_line(-1)  # Print top-most divider line
+        self.print_divider_line(-1)  # Print top-most divider line
 
         for j in range(self.num_spots):
             if self.use_single_line == False and (j % self.part_side == 0):
@@ -596,17 +596,17 @@ class Puzzle():
                 print("|{:^{}}".format(str(self.puzz[j].get_con()), 3*cw[j%self.full_side]), end = "")  # Must convert to string to print list
                 if (j+1) % self.full_side == 0 and self.use_single_line == False:
                     print("||")  # Print end of line at end of each line
-                    self.p_divider_line(j)  # Determine if print normal/wide column single/double divider line
+                    self.print_divider_line(j)  # Determine if print normal/wide column single/double divider line
                 elif (j+1) % self.full_side == 0 and self.use_single_line == True:
                     print("|")  # Print end of line at end of each line
-                    self.p_divider_line(j)  # Determine if print normal/wide column single/double divider line
+                    self.print_divider_line(j)  # Determine if print normal/wide column single/double divider line
                 else:
                     pass
              
 
     def display_puzzle_narrow_column(self):
         cw = self.calc_column_widths()  # Get max column widths
-        self.p_divider_line(-1)
+        self.print_divider_line(-1)
 
         for j in range(self.num_spots):
             if self.use_single_line == False and (j % self.part_side == 0):
@@ -615,10 +615,10 @@ class Puzzle():
                 print("|{:^{}}".format(str(self.puzz[j].short_list_string()), 2*cw[j%self.full_side] + 1), end = "")  # Must convert to string to print list
                 if (j+1) % self.full_side == 0 and self.use_single_line == False:
                     print("||")  # Print end of line at end of each line
-                    self.p_divider_line(j)  # Determine if print normal/wide column single/double divider line
+                    self.print_divider_line(j)  # Determine if print normal/wide column single/double divider line
                 elif (j+1) % self.full_side == 0 and self.use_single_line == True:
                     print("|")  # Print end of line at end of each line
-                    self.p_divider_line(j)  # Determine if print normal/wide column single/double divider line
+                    self.print_divider_line(j)  # Determine if print normal/wide column single/double divider line
                 else:
                     pass
              
@@ -629,19 +629,19 @@ class Puzzle():
         else:  # Determine if narrow columns 
             self.display_puzzle_narrow_column()
 
-    def p_divider_line(self, j):  # Determine if print normal/wide column single/double divider line
+    def print_divider_line(self, j):  # Determine if print normal/wide column single/double divider line
         if (self.use_single_line == False) and ((j + 1) % (self.part_side ** 3) == 0):
-            self.p_double_line(j)  # print double line
+            self.print_double_line(j)  # print double line
         else:
-            self.p_single_line(j)  # print single line
+            self.print_single_line(j)  # print single line
 
-    def p_double_line(self,j):
+    def print_double_line(self, j):
         if self.normal_column_width == True:  # Determine if normal or narrow columns 
             print(self.normal_divider_double_line)  # Print normal horizontal line between rows
         else:
             print(self.narrow_divider_double_line)  # Print narrow horizontal line between rows
 
-    def p_single_line(self,j):
+    def print_single_line(self, j):
         if self.normal_column_width == True:  # Determine if normal or narrow columns 
             print(self.normal_divider_line)  # Print normal double horizontal line between rows
         else:
@@ -814,9 +814,9 @@ class Puzzle():
 
     def set_values_display_format(self, reply):
         if reply == "1":
-            pass
+            self.show_list_brackets = True  # Default display values as '[4, 5, 6]'
         elif reply == "2":
-            pass
+            self.show_list_brackets = False  # Default display values as '4,5,6'
         else:
             pass
 
