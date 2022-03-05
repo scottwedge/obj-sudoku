@@ -17,7 +17,7 @@ class UserInput():
     def start_menu(self):
         print()  # Spacing blank line
         print("Please choose one of the following options:")
-        entry = input("1. Select puzzle\n2. Solve puzzle\n3. Show puzzle\n4. Display puzzle with normal column width (default)\n5. Display puzzle with narrow column width\n6. Display puzzle with single lines around internal grids (default)\n7. Display puzzle with double lines around internal grids\n8. List unresolved spots and their possible values\n9. Select a spot and try one of its possible values\n10. Check puzzle sanity\n11. Quit game\nEnter selection: ")
+        entry = input("1. Select puzzle\n2. Solve puzzle\n3. Show puzzle\n4. Config puzzle with normal column width (default)\n5. Config puzzle with narrow column width\n6. Config puzzle with single lines around internal grids (default)\n7. Config puzzle with double lines around internal grids\n8. Configure how to display values inside grid\n9. List unresolved spots and their possible values\n10. Select a spot and try one of its possible values\n11. Check puzzle sanity\n12. Quit game\nEnter selection: ")
         if entry == "1":  # Select puzzle
             return entry
         elif entry == "2":  # Solve puzzle
@@ -32,13 +32,15 @@ class UserInput():
             return entry
         elif entry == "7":  # Use double lines (++======++ or ||) around internal grids
             return entry
-        elif entry == "8":  # List unresolved spots and their values
+        elif entry == "8":  # Determine how to display values in grid ('[a, b]' vs 'a,b')
             return entry
-        elif entry == "9":  # Select a spot and guess a value 
+        elif entry == "9":  # List unresolved spots and their values
             return entry
-        elif entry == "10":  # Sanity check puzzle
+        elif entry == "10":  # Select a spot and guess a value 
             return entry
-        elif entry == "11":  # Exit game
+        elif entry == "11":  # Sanity check puzzle
+            return entry
+        elif entry == "12":  # Exit game
             self.play_game = False
         else:
             pass
@@ -143,6 +145,22 @@ class UserInput():
                 print("'{}' is not a valid choice. Enter one of: {}".format(guess_value, possible_values_string))
         return guess_value
 
+    def determine_values_display_format(self):  # Can display as '4,5' or as '[4, 5]'
+        valid_guess = False
+        while not valid_guess:
+            print()  # Blank spacer line
+            print("There are two formats to display the available values inside a grid spot")
+            print("Either 1. '[a, b, c]' (the default) or")
+            print("2. 'a,b,c' which looks better and is shorter")
+            reply = input("Which format do you want: 1 or 2? ")
+            if reply == "1" or reply == "2":
+                valid_guess = True  # Exit while loop when get valid user input
+            else:
+                print()  # Blank line as spacer
+                pass  # Prompt again
+        return valid_guess
+                       
+
 class Spot():  # 
     def __init__(self, num, known, contents, row, column, grid):
         self.num = num  # Value of 0 through 80
@@ -230,6 +248,7 @@ class Puzzle():
         self.narrow_divider_double_line = "++===+===+===++"  # Initialize value
         self.normal_divider_double_line = "++=====+=====+=====++"  # Initialize value
         self.use_single_line = True  # Highlight internal grid boundaries with single (default) line
+        self.list_brackets = True  # Default display values as '[4, 5]'
         self.solved_spots = -1  # Initialize to invalid value
         self.unsolved_spots = -1  # Initialize to invalid value
         self.unsolved_combinations_count = -1  # Initialize to invalid value
@@ -793,6 +812,13 @@ class Puzzle():
         else:
             pass  # Do nothing
 
+    def set_values_display_format(self, reply):
+        if reply == "1":
+            pass
+        elif reply == "2":
+            pass
+        else:
+            pass
 
 def main():
    
@@ -800,87 +826,97 @@ def main():
     while ui.play_game == True:  # Play game until quit
 
         entry = ui.start_menu()  # Choose option in Starting menu
+   
+        try: 
+            if entry == "1":
+                ui.puzzle_selected = True
+                chosen_puzzle = ui.puzzle_menu()
+                width = ui.normal_column_width
+        
+                p = Puzzle(chosen_puzzle, width)
+        
+            if entry == "2":  # Solve
+                p.making_progress = True
+                while p.making_progress == True:
+                    p.solve_all()
     
-        if entry == "1":
-            ui.puzzle_selected = True
-            chosen_puzzle = ui.puzzle_menu()
-            width = ui.normal_column_width
+            if entry == "3":  # Show
+                p.display_puzzle()
+                print()
+                p.show_state()
+                p.calc_solved_counts()
+                p.show_solved_unsolved_counts()
     
-            p = Puzzle(chosen_puzzle, width)
+            if entry == "4":  # Use normal column width (default)
+                p.normal_column_width = True
     
-        if entry == "2":  # Solve
-            p.making_progress = True
-            while p.making_progress == True:
-                p.solve_all()
-
-        if entry == "3":  # Show
-            p.display_puzzle()
-            print()
-            p.show_state()
-            p.calc_solved_counts()
-            p.show_solved_unsolved_counts()
-
-        if entry == "4":  # Use normal column width (default)
-            p.normal_column_width = True
-
-        if entry == "5":  # Use narrow column width  (not default)
-            p.normal_column_width = False  # For 'narrow' column width
-
-        if entry == "6":  # Use single lines around internal grids (default)
-            p.use_single_line = True  # Highlight internal grid boundaries with double line
-
-        if entry == "7":  # Use double lines (++======++ or ||) around internal grids
-            p.use_single_line = False  # Highlight internal grid boundaries with double line
-
-        if entry == "8":
-            guesses = p.unsolved_spot_guesses()
-            for j in guesses:
-                print("Spot {} contains {}".format(j, guesses[j]))
-
-        if entry == "9":
-            # In 'p', list unresolved spots and their content and prompt user to select a guess
-            # Make a copy 'g' of the current puzzle and then alter copy with the guess
-            # Automatically restart solving the puzzle and check result for sanity
-            # If insane, offer to revert to previous version 'p' of puzzle and delete value that
-            #   made puzzle insane.
-            # If sane, overwrite original 'p' with 'g' and continue guessing
-            guesses = p.unsolved_spot_guesses()
-            p.list_spot_and_guesses(guesses)
-
-            spot_entry = ui.choose_unresolved_spot(guesses)  # Select spot for guess
-            guess_value = ui.guess_unresolved_value(guesses, spot_entry)  # Select value for guess
-
-            g = copy.deepcopy(p)  # Make copy of stalled puzzle; try guess on copy  # Need deepcopy
-#            print("OLD VALUE", g.puzz[spot_entry].get_con())  #DEBUG  # get old value
-            g.puzz[spot_entry].set_con(guess_value)   # Set new value
-            g.puzz[spot_entry].set_known(True)   # Set to True
-            g.making_progress = True  # Must switch from False or will not try to solve again
-#            print("NEW VALUE", g.puzz[spot_entry].get_con())  #DEBUG  # get NEW value
-
-            while g.making_progress == True:
-                g.solve_all()
+            if entry == "5":  # Use narrow column width  (not default)
+                p.normal_column_width = False  # For 'narrow' column width
     
-            g.display_puzzle()
-            print()
-            g.show_state()
-            g.calc_solved_counts()
-            g.show_solved_unsolved_counts()
+            if entry == "6":  # Use single lines around internal grids (default)
+                p.use_single_line = True  # Highlight internal grid boundaries with double line
+    
+            if entry == "7":  # Use double lines (++======++ or ||) around internal grids
+                p.use_single_line = False  # Highlight internal grid boundaries with double line
+    
+            if entry == "8":  # List possible values as 'a,b' without list brackets or spaces
+                reply = ui.determine_values_display_format()  # Can display as '4,5' or as '[4, 5]'
+                p.set_values_display_format(reply)
+    
+            if entry == "9":
+                guesses = p.unsolved_spot_guesses()
+                for j in guesses:
+                    print("Spot {} contains {}".format(j, guesses[j]))
+    
+            if entry == "10":
+                # In 'p', list unresolved spots and their content and prompt user to select a guess
+                # Make a copy 'g' of the current puzzle and then alter copy with the guess
+                # Automatically restart solving the puzzle and check result for sanity
+                # If insane, offer to revert to previous version 'p' of puzzle and delete value that
+                #   made puzzle insane.
+                # If sane, overwrite original 'p' with 'g' and continue guessing
+                guesses = p.unsolved_spot_guesses()
+                p.list_spot_and_guesses(guesses)
+    
+                spot_entry = ui.choose_unresolved_spot(guesses)  # Select spot for guess
+                guess_value = ui.guess_unresolved_value(guesses, spot_entry)  # Select value for guess
+    
+                g = copy.deepcopy(p)  # Make copy of stalled puzzle; try guess on copy  # Need deepcopy
+    #            print("OLD VALUE", g.puzz[spot_entry].get_con())  #DEBUG  # get old value
+                g.puzz[spot_entry].set_con(guess_value)   # Set new value
+                g.puzz[spot_entry].set_known(True)   # Set to True
+                g.making_progress = True  # Must switch from False or will not try to solve again
+    #            print("NEW VALUE", g.puzz[spot_entry].get_con())  #DEBUG  # get NEW value
+    
+                while g.making_progress == True:
+                    g.solve_all()
+        
+                g.display_puzzle()
+                print()
+                g.show_state()
+                g.calc_solved_counts()
+                g.show_solved_unsolved_counts()
+    
+                sane = g.check_sanity()
+                if sane:  # So overwrite original 'p' with updated with guess 'g' version of puzzle
+                    p = copy.deepcopy(g)
+                else:  
+                    g.revert(p)
+                    p.remove_invalid(spot_entry, guess_value) 
+    #            print("P puzzle follows ___________________:")  #DEBUG
+    #            print("P=", p)  #DEBUG
+    #            print("G=", g)  #DEBUG
+    #            p.display_puzzle()  #DEBUG
+    #            g.display_puzzle()  #DEBUG
+    #            print("G puzzle preceeds ___________________:")  #DEBUG
+    
+            if entry == "11":  # 
+                p.check_sanity()
+        
+        except UnboundLocalError:
+            print()  # Blank spacer line
+            print("You must select puzzle before you can configure puzzle options!")
 
-            sane = g.check_sanity()
-            if sane:  # So overwrite original 'p' with updated with guess 'g' version of puzzle
-                p = copy.deepcopy(g)
-            else:  
-                g.revert(p)
-                p.remove_invalid(spot_entry, guess_value) 
-#            print("P puzzle follows ___________________:")  #DEBUG
-#            print("P=", p)  #DEBUG
-#            print("G=", g)  #DEBUG
-#            p.display_puzzle()  #DEBUG
-#            g.display_puzzle()  #DEBUG
-#            print("G puzzle preceeds ___________________:")  #DEBUG
-
-        if entry == "10":  # 
-            p.check_sanity()
 
 
 if __name__ == "__main__":
