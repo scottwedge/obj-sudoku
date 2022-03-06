@@ -149,8 +149,8 @@ class UserInput():
         valid_guess = False
         while not valid_guess:
             print()  # Blank spacer line
-            print("There are two formats to display the available values inside a grid spot")
-            print("Either 1. '[a, b, c]' (the default) or")
+            print("There are two formats to display the available values inside a grid spot:")
+            print("1. '[a, b, c]' (the default) or")
             print("2. 'a,b,c' which looks better and is shorter")
             reply = input("Which format do you want: 1 or 2? ")
             if reply == "1" or reply == "2":
@@ -158,7 +158,7 @@ class UserInput():
             else:
                 print()  # Blank line as spacer
                 pass  # Prompt again
-        return valid_guess
+        return reply
                        
 
 class Spot():  # 
@@ -171,7 +171,7 @@ class Spot():  #
         self.grid = grid
 
     def get_con(self):
-        return self.contents
+            return self.contents
 
     def set_con(self, values):
         self.contents = values
@@ -216,7 +216,7 @@ class Spot():  #
     def get_coords(self):
         return (self.contents, self.row, self.column, self.grid) 
 
-    def short_list_string(self):  # Display list without spaces to safe space
+    def short_list_string(self):  # Display values with list brackets without spaces
         con = self.get_con()
         if self.known == True:  # Single value
             short_list = str(con)  # Single value is not displayed as a list of one
@@ -231,6 +231,12 @@ class Spot():  #
                 short_list += "]"
         return short_list
             
+    def no_bracket_short_string(self):  # Display values without list brackets or spaces
+        short_list = self.short_list_string()
+        u1 = short_list.replace("[","")  # Use 'replace' to remove '[' from string
+        u2 = u1.replace("]","")  # Use 'replace' to remove ']' from string
+        return u2
+
 
 class Puzzle():
     def __init__(self, initial_values, width):
@@ -608,20 +614,35 @@ class Puzzle():
         cw = self.calc_column_widths()  # Get max column widths
         self.print_divider_line(-1)
 
-        for j in range(self.num_spots):
-            if self.use_single_line == False and (j % self.part_side == 0):
-                print("||{:^{}}".format(str(self.puzz[j].short_list_string()), 2*cw[j%self.full_side] + 1), end = "")  # Must convert to string to print list
-            else:
-                print("|{:^{}}".format(str(self.puzz[j].short_list_string()), 2*cw[j%self.full_side] + 1), end = "")  # Must convert to string to print list
-                if (j+1) % self.full_side == 0 and self.use_single_line == False:
-                    print("||")  # Print end of line at end of each line
-                    self.print_divider_line(j)  # Determine if print normal/wide column single/double divider line
-                elif (j+1) % self.full_side == 0 and self.use_single_line == True:
-                    print("|")  # Print end of line at end of each line
-                    self.print_divider_line(j)  # Determine if print normal/wide column single/double divider line
+        if self.show_list_brackets == True:  # Default display values as '[4, 5]'
+
+            for j in range(self.num_spots):
+                if self.use_single_line == False and (j % self.part_side == 0):
+                    print("||{:^{}}".format(str(self.puzz[j].short_list_string()), 2*cw[j%self.full_side] + 1), end = "")  # Must convert to string to print list
                 else:
-                    pass
-             
+                    print("|{:^{}}".format(str(self.puzz[j].short_list_string()), 2*cw[j%self.full_side] + 1), end = "")  # Must convert to string to print list
+                    if (j+1) % self.full_side == 0 and self.use_single_line == False:
+                        print("||")  # Print end of line at end of each line
+                        self.print_divider_line(j)  # Determine if print normal/wide column single/double divider line
+                    elif (j+1) % self.full_side == 0 and self.use_single_line == True:
+                        print("|")  # Print end of line at end of each line
+                        self.print_divider_line(j)  # Determine if print normal/wide column single/double divider line
+                    else:
+                        pass
+        else:  # self.show_list_brackets == False  # Display values as '4,5'
+            for j in range(self.num_spots):
+                if self.use_single_line == False and (j % self.part_side == 0):
+                    print("||{:^{}}".format(str(self.puzz[j].no_bracket_short_string()), 2*cw[j%self.full_side] + 1), end = "")  # Must convert to string to print list
+                else:
+                    print("|{:^{}}".format(str(self.puzz[j].no_bracket_short_string()), 2*cw[j%self.full_side] + 1), end = "")  # Must convert to string to print list
+                    if (j+1) % self.full_side == 0 and self.use_single_line == False:
+                        print("||")  # Print end of line at end of each line
+                        self.print_divider_line(j)  # Determine if print normal/wide column single/double divider line
+                    elif (j+1) % self.full_side == 0 and self.use_single_line == True:
+                        print("|")  # Print end of line at end of each line
+                        self.print_divider_line(j)  # Determine if print normal/wide column single/double divider line
+                    else:
+                        pass
 
     def display_puzzle(self):
         if self.normal_column_width == True:  # Determine if normal columns 
@@ -813,10 +834,13 @@ class Puzzle():
             pass  # Do nothing
 
     def set_values_display_format(self, reply):
-        if reply == "1":
+        self.reply = reply
+        if self.reply == "1":
             self.show_list_brackets = True  # Default display values as '[4, 5, 6]'
-        elif reply == "2":
+            print("DEBUG ___ setting show_list_brackets to {}".format(self.show_list_brackets))  #DEBUG
+        elif self.reply == "2":
             self.show_list_brackets = False  # Default display values as '4,5,6'
+            print("DEBUG ___ setting show_list_brackets to {}".format(self.show_list_brackets))  #DEBUG
         else:
             pass
 
@@ -860,7 +884,7 @@ def main():
                 p.use_single_line = False  # Highlight internal grid boundaries with double line
     
             if entry == "8":  # List possible values as 'a,b' without list brackets or spaces
-                reply = ui.determine_values_display_format()  # Can display as '4,5' or as '[4, 5]'
+                reply = ui.determine_values_display_format()  # Can display as '[4, 5]' or as '4,5'
                 p.set_values_display_format(reply)
     
             if entry == "9":
