@@ -233,10 +233,16 @@ class Spot():  #
             
     def no_bracket_short_string(self):  # Display values without list brackets or spaces
         short_list = self.short_list_string()
-        u1 = short_list.replace("[","")  # Use 'replace' to remove '[' from string
-        u2 = u1.replace("]","")  # Use 'replace' to remove ']' from string
-        return u2
+        short_list1 = short_list.replace("[","")  # Use 'replace' to remove '[' from string
+        short_list2 = short_list1.replace("]","")  # Use 'replace' to remove ']' from string
+        return short_list2
 
+    def no_bracket_normal_column(self):  # No bracket and no space '4,5' format in normal column 
+        con = str(self.get_con())  # Convert to string so can replace
+        con1 = con.replace("[","")  # Use 'replace' to remove '[' from string
+        con2 = con1.replace("]","")  # Use 'replace' to remove ']' from string
+        con3 = con2.replace(" ","")  # Use 'replace' to remove ' ' from string
+        return con3
 
 class Puzzle():
     def __init__(self, initial_values, width):
@@ -595,19 +601,35 @@ class Puzzle():
         cw = self.calc_column_widths()  # Get max column widths and create divider lines
         self.print_divider_line(-1)  # Print top-most divider line
 
-        for j in range(self.num_spots):
-            if self.use_single_line == False and (j % self.part_side == 0):
-                print("||{:^{}}".format(str(self.puzz[j].get_con()), 3*cw[j%self.full_side]), end = "")  # Must convert to string to print list
-            else:
-                print("|{:^{}}".format(str(self.puzz[j].get_con()), 3*cw[j%self.full_side]), end = "")  # Must convert to string to print list
-                if (j+1) % self.full_side == 0 and self.use_single_line == False:
-                    print("||")  # Print end of line at end of each line
-                    self.print_divider_line(j)  # Determine if print normal/wide column single/double divider line
-                elif (j+1) % self.full_side == 0 and self.use_single_line == True:
-                    print("|")  # Print end of line at end of each line
-                    self.print_divider_line(j)  # Determine if print normal/wide column single/double divider line
+        if self.show_list_brackets == True:  # Default display values as '[4, 5]'
+
+            for j in range(self.num_spots):
+                if self.use_single_line == False and (j % self.part_side == 0):
+                    print("||{:^{}}".format(str(self.puzz[j].get_con()), 3*cw[j%self.full_side]), end = "")  # Must convert to string to print list
                 else:
-                    pass
+                    print("|{:^{}}".format(str(self.puzz[j].get_con()), 3*cw[j%self.full_side]), end = "")  # Must convert to string to print list
+                    if (j+1) % self.full_side == 0 and self.use_single_line == False:
+                        print("||")  # Print end of line at end of each line
+                        self.print_divider_line(j)  # Determine if print normal/wide column single/double divider line
+                    elif (j+1) % self.full_side == 0 and self.use_single_line == True:
+                        print("|")  # Print end of line at end of each line
+                        self.print_divider_line(j)  # Determine if print normal/wide column single/double divider line
+                    else:
+                        pass
+        else:  # self.show_list_brackets == False   # So display as '4,5'  #DEBUGHERE
+            for j in range(self.num_spots):
+                if self.use_single_line == False and (j % self.part_side == 0):
+                    print("||{:^{}}".format(str(self.puzz[j].no_bracket_normal_column()), 3*cw[j%self.full_side]), end = "") 
+                else:
+                    print("|{:^{}}".format(str(self.puzz[j].no_bracket_normal_column()), 3*cw[j%self.full_side]), end = "") 
+                    if (j+1) % self.full_side == 0 and self.use_single_line == False:
+                        print("||")  # Print end of line at end of each line
+                        self.print_divider_line(j)  # Determine normal/wide column single/double divider
+                    elif (j+1) % self.full_side == 0 and self.use_single_line == True:
+                        print("|")  # Print end of line at end of each line
+                        self.print_divider_line(j)  # Determine normal/wide column single/double divider
+                    else:
+                        pass
              
 
     def display_puzzle_narrow_column(self):
