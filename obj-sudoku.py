@@ -179,7 +179,6 @@ class Spot():  #
     def rem(self, val):
         self.val = val
         con = self.get_con()
-#        print("DEBUG ___ con = {}; removing ___{}".format(con, self.val))  #DEBUG
         
         try:  #DBUG
             con.remove(self.val)
@@ -187,7 +186,6 @@ class Spot():  #
             pass 
 
         self.set_con(con)
-#        print("DEBUG K contents now {}".format(self.puzz[k].get_con()))
  
         try:  #DBUG
             if len(self.get_con()) == 1 and isinstance(self.get_con(), list):
@@ -318,14 +316,6 @@ class Puzzle():
             else:
                 self.puzz[num] = Spot(num, True, self.initial_values[num], row, column, grid)
 
-#            print("Spot {} ".format(num), end = "")  #DEBUG
-#            print("contains {:^{}}".format(str(self.puzz[num].get_con()), 30), end = "")  #DEBUG 
-            # Must use column width to align columns
-            # Must use 'str' on list else get error 
-#            print("Row= {}, ".format(self.puzz[num].get_row()), end = "")  #DEBUG
-#            print("Column= {}, ".format(self.puzz[num].get_column()), end = "")  #DEBUG
-#            print("Grid= {}.".format(self.puzz[num].get_grid()))  #DEBUG
-      
     def get_val(self, spot):
         self.spot = spot
         return self.puzz[self.spot].get_con() 
@@ -340,23 +330,15 @@ class Puzzle():
             else:  # Value is known so remove from all other spots in same row except itself
                 row_number = self.puzz[j].get_row()
                 for k in range(self.num_spots):
-#                    print("J,K ROWS have assigned values __: {},{}".format(j, k))  #DEBUG
-#                    print()  #DEBUG space
                     if self.puzz[k].get_row() != row_number:  # Skip since wrong row
-#                        print("J in row {} but K in row {} so skip".format(row_number, self.puzz[k].get_row()))  #DEBUG
                         continue  
                     else:
                         if self.puzz[k].get_known() == True:  # skip since cannot remove from known spot (includes itself)
                             continue
                         else:
-#                            print("DEBUG J is: {}".format(self.puzz[j].get_con()))
-#                            print("DEBUG K is: {}".format(self.puzz[k].get_con()))
  
                             if self.puzz[j].get_con() in self.puzz[k].get_con():  # If duplicated
-#                                print("DEBUG J in K so remove")
                                 self.puzz[k].rem(self.puzz[j].get_con())
-#                                print("DEBUG K contents now {}".format(self.puzz[k].get_con()))
-#                                print()  #DEBUG add blank line
                             else:  # skip
                                 pass
 
@@ -370,23 +352,15 @@ class Puzzle():
             else:  # Value is known so remove from all other spots in same column except itself
                 column_number = self.puzz[j].get_column()
                 for k in range(self.num_spots):
-#                    print("J,K COLUMNS have assigned values __: {},{}".format(j, k))  #DEBUG
-#                    print()  #DEBUG space
                     if self.puzz[k].get_column() != column_number:  # Skip since wrong column
-#                        print("J in column {} but K in column {} so skip".format(column_number, self.puzz[k].get_column()))  #DEBUG
                         continue  
                     else:
                         if self.puzz[k].get_known() == True:  # skip since cannot remove from known spot (includes itself)
                             continue
                         else:
-#                            print("DEBUG J is: {}".format(self.puzz[j].get_con()))
-#                            print("DEBUG K is: {}".format(self.puzz[k].get_con()))
  
                             if self.puzz[j].get_con() in self.puzz[k].get_con():  # If duplicated
-#                                print("DEBUG J in K so remove")
                                 self.puzz[k].rem(self.puzz[j].get_con())
-#                                print("DEBUG K contents now {}".format(self.puzz[k].get_con()))
-#                                print()  #DEBUG add blank line
                             else:  # skip
                                 pass
 
@@ -400,23 +374,15 @@ class Puzzle():
             else:  # Value is known so remove from all other spots in same column except itself
                 grid_number = self.puzz[j].get_grid()
                 for k in range(self.num_spots):
-#                    print("J,K GRIDS have assigned values __: {},{}".format(j, k))  #DEBUG
-#                    print()  #DEBUG space
                     if self.puzz[k].get_grid() != grid_number:  # Skip since wrong grid
-#                        print("J in grid {} but K in grid {} so skip".format(grid_number, self.puzz[k].get_grid()))  #DEBUG
                         continue  
                     else:
                         if self.puzz[k].get_known() == True:  # skip since cannot remove from known spot (includes itself)
                             continue
                         else:
-#                            print("DEBUG J is: {}".format(self.puzz[j].get_con()))
-#                            print("DEBUG K is: {}".format(self.puzz[k].get_con()))
  
                             if self.puzz[j].get_con() in self.puzz[k].get_con():  # If duplicated
-#                                print("DEBUG J in K so remove")
                                 self.puzz[k].rem(self.puzz[j].get_con())
-#                                print("DEBUG K contents now {}".format(self.puzz[k].get_con()))
-#                                print()  #DEBUG add blank line
                             else:  # skip
                                 pass
 
@@ -616,7 +582,7 @@ class Puzzle():
                         self.print_divider_line(j)  # Determine if print normal/wide column single/double divider line
                     else:
                         pass
-        else:  # self.show_list_brackets == False   # So display as '4,5'  #DEBUGHERE
+        else:  # self.show_list_brackets == False   # So display as '4,5'  
             for j in range(self.num_spots):
                 if self.use_single_line == False and (j % self.part_side == 0):
                     print("||{:^{}}".format(str(self.puzz[j].no_bracket_normal_column()), 3*cw[j%self.full_side]), end = "") 
@@ -716,9 +682,6 @@ class Puzzle():
         after_columns_solving_total = self.calc_num_possible_values()
         self.solve_grid_singles()
         after_grids_solving_total = self.calc_num_possible_values()
-#        print("After row solving total = {}".format(after_rows_solving_total))  #DEBUG
-#        print("After column solving total = {}".format(after_columns_solving_total))  #DEBUG
-#        print("After grid solving total = {}".format(after_grids_solving_total))  #DEBUG
         print("PROGRESS STATE = {}".format(self.making_progress))  #DEBUG
         self.solve_pairs()
 
@@ -849,9 +812,7 @@ class Puzzle():
         self.value = value
         reply = input("Remove value {} from spot {} (since it made puzzle insane)?  yY/nN: ".format(value, spot))
         if reply == "Y" or reply == "y":
-#            print("DEBUG___ value before =  {}".format(self.puzz[self.spot].get_con()))  #DEBUG
             self.puzz[self.spot].rem(self.value)
-#            print("DEBUG___ value after =  {}".format(self.puzz[self.spot].get_con()))  #DEBUG
         else:
             pass  # Do nothing
 
@@ -859,10 +820,8 @@ class Puzzle():
         self.reply = reply
         if self.reply == "1":
             self.show_list_brackets = True  # Default display values as '[4, 5, 6]'
-            print("DEBUG ___ setting show_list_brackets to {}".format(self.show_list_brackets))  #DEBUG
         elif self.reply == "2":
             self.show_list_brackets = False  # Default display values as '4,5,6'
-            print("DEBUG ___ setting show_list_brackets to {}".format(self.show_list_brackets))  #DEBUG
         else:
             pass
 
@@ -928,11 +887,9 @@ def main():
                 guess_value = ui.guess_unresolved_value(guesses, spot_entry)  # Select value for guess
     
                 g = copy.deepcopy(p)  # Make copy of stalled puzzle; try guess on copy  # Need deepcopy
-    #            print("OLD VALUE", g.puzz[spot_entry].get_con())  #DEBUG  # get old value
                 g.puzz[spot_entry].set_con(guess_value)   # Set new value
                 g.puzz[spot_entry].set_known(True)   # Set to True
                 g.making_progress = True  # Must switch from False or will not try to solve again
-    #            print("NEW VALUE", g.puzz[spot_entry].get_con())  #DEBUG  # get NEW value
     
                 while g.making_progress == True:
                     g.solve_all()
@@ -949,12 +906,6 @@ def main():
                 else:  
                     g.revert(p)
                     p.remove_invalid(spot_entry, guess_value) 
-    #            print("P puzzle follows ___________________:")  #DEBUG
-    #            print("P=", p)  #DEBUG
-    #            print("G=", g)  #DEBUG
-    #            p.display_puzzle()  #DEBUG
-    #            g.display_puzzle()  #DEBUG
-    #            print("G puzzle preceeds ___________________:")  #DEBUG
     
             if entry == "11":  # 
                 p.check_sanity()
