@@ -161,21 +161,31 @@ class UserInput():
         return reply
 
     def determine_column_width(self):  # Prompt user to select either normal (default) or narrow column width
-        valid_guess = False
-        while not valid_guess:  # Loop until valid guess
+        valid_reply = False
+        while not valid_reply:  # Loop until valid selection
             print()  # Blank line spacer
-            print("Configure the puzzle for:")
+            print("Configure the puzzle column width to be:")
             print("1. normal (default) width or")
             print("2. narrow width")
             reply = input ("Enter 1 or 2: ")
             if reply == "1" or reply == "2":
-                valid_guess = True
+                valid_reply = True  # Exit while loop
             else:
                 pass  # prompt again for valid reply
         return reply
 
-            
-                       
+    def determine_grid_side(self):  # Prompt user to select either single or two lines around internal grid 
+        valid_reply = False
+        while not valid_reply:  # Loop until user enters valid selection
+            print()  # Blank spacing line    
+            print("Configure internal grid sides to be either:")
+            print("1. single line (default) or")
+            print("2. double line")
+            reply = input("Enter 1 or 2: ")
+            if reply == "1" or reply == "2":
+                valid_reply = True  # Exit while loop
+        return reply
+ 
 
 class Spot():  # 
     def __init__(self, num, known, contents, row, column, grid):
@@ -882,7 +892,13 @@ def main():
                 pass
     
             if entry == "6":  # Configure lines around internal grids
-                p.use_single_line = True  # 
+                reply = ui.determine_grid_side()  # Prompt user to decide lines around internal grid 
+                if reply == "1":  # Single line (default)
+                    p.use_single_line = True  
+                elif reply == "2":  # Double line (more visible)
+                    p.use_single_line = False
+                else:
+                    pass
     
             if entry == "7":  # not used
                 pass
