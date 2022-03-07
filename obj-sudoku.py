@@ -17,21 +17,21 @@ class UserInput():
     def start_menu(self):
         print()  # Spacing blank line
         print("Please choose one of the following options:")
-        entry = input("1. Select puzzle\n2. Solve puzzle\n3. Show puzzle\n4. Config puzzle with normal column width (default)\n5. Config puzzle with narrow column width\n6. Config puzzle with single lines around internal grids (default)\n7. Config puzzle with double lines around internal grids\n8. Configure how to display values inside grid\n9. List unresolved spots and their possible values\n10. Select a spot and try one of its possible values\n11. Check puzzle sanity\n12. Quit game\nEnter selection: ")
+        entry = input("1. Select puzzle\n2. Solve puzzle\n3. Show puzzle\n4. Config puzzle column width\n5.\n6. Config puzzle lines around internal grids \n7. \n8. Configure how to display values inside grid\n9. List unresolved spots and their possible values\n10. Select a spot and try one of its possible values\n11. Check puzzle sanity\n12. Quit game\nEnter selection: ")
         if entry == "1":  # Select puzzle
             return entry
         elif entry == "2":  # Solve puzzle
             return entry
         elif entry == "3":  # Show puzzle
             return entry
-        elif entry == "4":  # Use normal column width (default)
+        elif entry == "4":  # Configure  column width
             return entry
-        elif entry == "5":  # Use narrow column width  (not default)
+        elif entry == "5":  # not used for now
+            pass 
+        elif entry == "6":  # Configure lines around internal grids
             return entry
-        elif entry == "6":  # Use single lines around internal grids (default)
-            return entry
-        elif entry == "7":  # Use double lines (++======++ or ||) around internal grids
-            return entry
+        elif entry == "7":  # not used for now
+            pass
         elif entry == "8":  # Determine how to display values in grid ('[a, b]' vs 'a,b')
             return entry
         elif entry == "9":  # List unresolved spots and their values
@@ -159,6 +159,22 @@ class UserInput():
                 print()  # Blank line as spacer
                 pass  # Prompt again
         return reply
+
+    def determine_column_width(self):  # Prompt user to select either normal (default) or narrow column width
+        valid_guess = False
+        while not valid_guess:  # Loop until valid guess
+            print()  # Blank line spacer
+            print("Configure the puzzle for:")
+            print("1. normal (default) width or")
+            print("2. narrow width")
+            reply = input ("Enter 1 or 2: ")
+            if reply == "1" or reply == "2":
+                valid_guess = True
+            else:
+                pass  # prompt again for valid reply
+        return reply
+
+            
                        
 
 class Spot():  # 
@@ -852,17 +868,24 @@ def main():
                 p.calc_solved_counts()
                 p.show_solved_unsolved_counts()
     
-            if entry == "4":  # Use normal column width (default)
-                p.normal_column_width = True
+            if entry == "4":  # Configure column width
+                reply = ui.determine_column_width()  # Prompt user to decide column width
+                if reply == "1":  # Normal width
+                    p.normal_column_width = True
+                elif reply == "2":  # Narrow width
+                    p.normal_column_width = False
+                else:
+                    pass
+                
     
-            if entry == "5":  # Use narrow column width  (not default)
-                p.normal_column_width = False  # For 'narrow' column width
+            if entry == "5":  # not used
+                pass
     
-            if entry == "6":  # Use single lines around internal grids (default)
-                p.use_single_line = True  # Highlight internal grid boundaries with double line
+            if entry == "6":  # Configure lines around internal grids
+                p.use_single_line = True  # 
     
-            if entry == "7":  # Use double lines (++======++ or ||) around internal grids
-                p.use_single_line = False  # Highlight internal grid boundaries with double line
+            if entry == "7":  # not used
+                pass
     
             if entry == "8":  # List possible values as 'a,b' without list brackets or spaces
                 reply = ui.determine_values_display_format()  # Can display as '[4, 5]' or as '4,5'
@@ -870,6 +893,8 @@ def main():
     
             if entry == "9":
                 guesses = p.unsolved_spot_guesses()
+                print()  # Blank spacer line
+                print("There are {} unsolved spots in the puzzle.".format(len(guesses)))
                 for j in guesses:
                     print("Spot {} contains {}".format(j, guesses[j]))
     
