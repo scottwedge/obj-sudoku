@@ -17,7 +17,7 @@ class UserInput():
     def start_menu(self):
         print()  # Spacing blank line
         print("Please choose one of the following options:")
-        entry = input("1. Select puzzle\n2. Solve puzzle\n3. Show puzzle\n4. Config puzzle column width\n5.\n6. Config puzzle lines around internal grids \n7. \n8. Configure how to display values inside grid\n9. List unresolved spots and their possible values\n10. Select a spot and try one of its possible values\n11. Check puzzle sanity\n12. Quit game\nEnter selection: ")
+        entry = input("1. Select puzzle\n2. Solve puzzle\n3. Show puzzle\n4. Configure normal or narrow column width\n5.\n6. Configure single or double lines around internal grids \n7. \n8. Configure how to display values inside grid\n9. List unresolved spots and their possible values\n10. Select a spot and try one of its possible values\n11. Check puzzle sanity\n12. Quit game\nEnter selection: ")
         if entry == "1":  # Select puzzle
             return entry
         elif entry == "2":  # Solve puzzle
@@ -44,6 +44,18 @@ class UserInput():
             self.play_game = False
         else:
             pass
+
+    def internal_or_external_puzzle(self):
+        valid_entry = False
+        while not valid_entry:
+            print()  # Blank spacer line
+            print("Choose puzzle to solve from either:")
+            print("1. internal puzzles or")
+            print("2. from external CSV files")
+            entry = input("Enter 1 or 2: ")
+            if entry == "1" or entry == "2":
+                valid_entry = True
+        return entry
 
 
     def puzzle_menu(self):
@@ -708,7 +720,7 @@ class Puzzle():
         after_columns_solving_total = self.calc_num_possible_values()
         self.solve_grid_singles()
         after_grids_solving_total = self.calc_num_possible_values()
-        print("PROGRESS STATE = {}".format(self.making_progress))  #DEBUG
+#        print("PROGRESS STATE = {}".format(self.making_progress))  #DEBUG
         self.solve_pairs()
 
     def check_sanity(self):  # Determine if puzzle still sane after guess a value for spot(s)
@@ -860,11 +872,16 @@ def main():
    
         try: 
             if entry == "1":
-                ui.puzzle_selected = True
-                chosen_puzzle = ui.puzzle_menu()
-                width = ui.normal_column_width
-        
-                p = Puzzle(chosen_puzzle, width)
+                entry = ui.internal_or_external_puzzle()  # Decide on (1) internal or (2) external
+                if entry == "1":
+                    ui.puzzle_selected = True
+                    chosen_puzzle = ui.puzzle_menu()
+                    width = ui.normal_column_width
+                    p = Puzzle(chosen_puzzle, width)
+                if entry == "2":
+                    pass
+
+
         
             if entry == "2":  # Solve
                 p.making_progress = True
