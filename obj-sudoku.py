@@ -17,7 +17,7 @@ class UserInput():
     def start_menu(self):
         print()  # Spacing blank line
         print("Please choose one of the following options:")
-        entry = input("1. Select puzzle\n2. Solve puzzle\n3. Show puzzle\n4. Configure normal or narrow column width\n5.\n6. Configure single or double lines around internal grids \n7. \n8. Configure how to display values inside grid\n9. List unresolved spots and their possible values\n10. Select a spot and try one of its possible values\n11. Check puzzle sanity\n12. Quit game\nEnter selection: ")
+        entry = input("1. Select puzzle\n2. Solve puzzle\n3. Show puzzle\n4. Configure normal or narrow column width\n5.\n6. Configure single or double lines around internal grids \n7. Backup/Restore puzzle\n8. Configure how to display values inside grid\n9. List unresolved spots and their possible values\n10. Select a spot and try one of its possible values\n11. Check puzzle sanity\n12. Quit game\nEnter selection: ")
         if entry == "1":  # Select puzzle
             return entry
         elif entry == "2":  # Solve puzzle
@@ -30,8 +30,8 @@ class UserInput():
             pass 
         elif entry == "6":  # Configure lines around internal grids
             return entry
-        elif entry == "7":  # not used for now
-            pass
+        elif entry == "7":  # Backup puzzle
+            return entry
         elif entry == "8":  # Determine how to display values in grid ('[a, b]' vs 'a,b')
             return entry
         elif entry == "9":  # List unresolved spots and their values
@@ -198,6 +198,26 @@ class UserInput():
                 valid_reply = True  # Exit while loop
         return reply
  
+    def backup_or_restore_choice(self):
+        valid_reply = False
+        while not valid_reply:
+            print()  # Blank spacer line
+            print("Decide if")
+            print("1. Backup or")
+            print("2. Restore")
+            reply = input("Enter 1 or 2: ")
+            if reply == "1" or reply == "2":
+                valid_reply = True
+            else:
+                pass  # Prompt again for valid input
+        return reply
+
+    def backup_menu(self):
+        pass
+
+    def restore_menu(self):
+        pass
+     
 
 class Spot():  # 
     def __init__(self, num, known, contents, row, column, grid):
@@ -917,8 +937,15 @@ def main():
                 else:
                     pass
     
-            if entry == "7":  # not used
-                pass
+            if entry == "7":  # Backup or restore puzzle
+                reply = ui.backup_or_restore_choice()
+                if reply == "1":
+                    ui.backup_menu()
+                elif reply == "2":
+                    p = ui.restore_menu()
+                else:
+                    pass
+                
     
             if entry == "8":  # List possible values as 'a,b' without list brackets or spaces
                 reply = ui.determine_values_display_format()  # Can display as '[4, 5]' or as '4,5'
