@@ -6,6 +6,7 @@
 # Imports
 import copy  # Need to perform 'copy.copy' operation to assign unique list to all unknown spots
 import time  #DEBUG insert delays to help figure out repeated looping
+import os.path  # Use 'exists' to determine if file exists or not
 
 # Classes
 class UserInput():
@@ -212,11 +213,21 @@ class UserInput():
                 pass  # Prompt again for valid input
         return reply
 
-    def backup_menu(self):
-        pass
+    def backup_menu(self):  # Get file location from user
+        valid_reply = False
+        while not valid_reply:
+            print()  # Blank spacer line
+            backup_file = input("Enter file location for backup: ")
+            if os.path.exists(backup_file):  # If file exists
+                print("This file already exists, choose a new location!")
+            else:
+                valid_reply = True
+        return backup_file
+        
 
     def restore_menu(self):
-        pass
+        restored_file = input("Enter file to restore: ")
+        return restored_file
      
 
 class Spot():  # 
@@ -883,6 +894,18 @@ class Puzzle():
         else:
             pass
 
+    def backup(self, file):  # Backup puzzle to file location
+        self.file = file
+        with open(self.file, "a") as f:
+            for j in self.puzz.items():
+                f.writelines(str(j) + "\n")  # Must convert to string
+
+    def restore(self, file):  # Restore puzzle from file location
+        self.file = file
+        with open(self.file, "r") as f:
+            p = f.read(self.file)
+        return p
+
 def main():
    
     ui = UserInput()
@@ -940,7 +963,8 @@ def main():
             if entry == "7":  # Backup or restore puzzle
                 reply = ui.backup_or_restore_choice()
                 if reply == "1":
-                    ui.backup_menu()
+                    backup_file = ui.backup_menu()
+                    p.backup(backup_file)
                 elif reply == "2":
                     p = ui.restore_menu()
                 else:
