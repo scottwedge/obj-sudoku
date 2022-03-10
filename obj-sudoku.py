@@ -897,8 +897,10 @@ class Puzzle():
     def backup(self, file):  # Backup puzzle to file location
         self.file = file
         with open(self.file, "a") as f:
-            for j in self.puzz.items():
-                f.writelines(str(j) + "\n")  # Must convert to string
+            for j in range(self.num_spots):
+                s = set() 
+                s = (j, self.puzz[j].get_con())
+                f.writelines(str(s) + "\n")
 
     def restore(self, file):  # Restore puzzle from file location
         self.file = file
