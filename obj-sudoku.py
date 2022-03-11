@@ -225,9 +225,19 @@ class UserInput():
         return backup_file
         
 
-    def restore_menu(self):
-        restored_file = input("Enter file to restore: ")
-        return restored_file
+    def restore_menu(self):  # Get valid file location from user
+        valid_reply = False
+        while not valid_reply:
+            print()  # Blank spacer line
+            restore_file = input("Enter file to restore: ")
+            if os.path.exists(restore_file):
+                valid_reply = True
+            else:
+                print("That file does not exist! Choose another.")
+            
+        with open(restore_file, "r") as f:
+            content = f.readlines()
+            print(content)  # DEBUG
      
 
 class Spot():  # 
@@ -968,7 +978,7 @@ def main():
                     backup_file = ui.backup_menu()
                     p.backup(backup_file)
                 elif reply == "2":
-                    p = ui.restore_menu()
+                    file = ui.restore_menu()
                 else:
                     pass
                 
