@@ -8,6 +8,24 @@ import copy  # Need to perform 'copy.copy' operation to assign unique list to al
 import time  #DEBUG insert delays to help figure out repeated looping
 import os.path  # Use 'exists' to determine if file exists or not
 
+# Functions
+def convert(v):  # Convert to integer or list of integers
+    if "[" in v:  # This is a list
+        print("{}".format(v))  # DEBUG
+    else:  # Just convert to integer after strip leading blank space
+        v = v.strip()
+        v = int(v)
+    return v
+
+def string_to_dict(n):  # Convert string from set values to dictionary values
+    print(n)
+    n = n.replace("(","")
+    n = n.replace(")","")
+    (k, v) = n.split(sep = ",", maxsplit = 1)
+    k = int(k)  # Convert k from string to integer
+    v = convert(v)  # Convert v from string to integer or list of integers
+    return (k, v)
+
 # Classes
 class UserInput():
     def __init__(self):
@@ -237,7 +255,8 @@ class UserInput():
             
         with open(restore_file, "r") as f:
             content = f.readlines()
-            print(content)  # DEBUG
+            for line in content:
+                (key, value) = string_to_dict(line)
      
 
 class Spot():  # 
