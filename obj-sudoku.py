@@ -8,23 +8,61 @@ import copy  # Need to perform 'copy.copy' operation to assign unique list to al
 import time  #DEBUG insert delays to help figure out repeated looping
 import os.path  # Use 'exists' to determine if file exists or not
 
+
 # Functions
-def convert(v):  # Convert to integer or list of integers
-    if "[" in v:  # This is a list
-        print("{}".format(v))  # DEBUG
-    else:  # Just convert to integer after strip leading blank space
-        v = v.strip()
-        v = int(v)
+    
+def convert(v):  # Convert string to integer or list of integers
+    if "[" not in v:  
+        v = int(v)  # This is a single value of type string, not a list, so convert to integer
+    else:
+        # This is a list so convert string to list of integers
+        # Remove list open and list close brackets
+        v = v.replace("[","")
+        v = v.replace("]","")
+        
+        # Split string into list of numbers by splitting on commas
+        list_of_string_numbers = v.split(sep = ",")
+        
+        integer_list = []  # Initialize list
+        for j in list_of_string_numbers:
+            integer_list.append(int(j))
     return v
+
+
+def strip_and_split(n):
+    n = n.strip()
+    n = n.replace("(","")  # Remove opening "(" from string
+    n = n.replace(")","")  # Remove closing ")" from string
+    n = n.replace(" ","")  # Remove all blanks from string
+
+    # Now split the set at first comma
+    (k,v) = n.split(sep = ",", maxsplit = 1)
+    
+#    print("K = {}".format(k))  # DEBUG
+#    print("V = {}".format(v))  # DEBUG
+    
+    # Convert key string to integer
+    k = int(k)
+
+    # Convert from string to integer or list of integers
+    v = convert(v)
+
+#    print("KV is _____________ {}".format((k,v)))  # DEBUG
+
+    return (k,v)
+
 
 def string_to_dict(n):  # Convert string from set values to dictionary values
     print(n)
-    n = n.replace("(","")
-    n = n.replace(")","")
+    n = n.replace("(","")  # Remove opening "(" character
+    n = n.replace(")","")  # Remove trailing ")" character
+    n = n.replace(" ","")  # Remove all blank spaces in string
+    
     (k, v) = n.split(sep = ",", maxsplit = 1)
     k = int(k)  # Convert k from string to integer
     v = convert(v)  # Convert v from string to integer or list of integers
     return (k, v)
+
 
 # Classes
 class UserInput():
@@ -252,12 +290,16 @@ class UserInput():
                 valid_reply = True
             else:
                 print("That file does not exist! Choose another.")
+        return restore_file
             
-        with open(restore_file, "r") as f:
+    def restore_data(self, file):
+        self.file = file
+        with open(self.file, "r") as f:
             content = f.readlines()
-            for line in content:
-                (key, value) = string_to_dict(line)
-     
+        for line in content:
+             print(line)
+#            (key, value) = strip_and_split(line)
+ 
 
 class Spot():  # 
     def __init__(self, num, known, contents, row, column, grid):
@@ -998,6 +1040,12 @@ def main():
                     p.backup(backup_file)
                 elif reply == "2":
                     file = ui.restore_menu()
+                    # Workaround to solve "TypeError: cannot unpack non-iterable NoneType object
+                    # at end of file
+                    try:
+                        (k,v) =  ui.restore_data(file)
+                    except:
+                        pass
                 else:
                     pass
                 
