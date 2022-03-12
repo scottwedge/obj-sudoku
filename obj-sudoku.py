@@ -74,7 +74,7 @@ class UserInput():
     def start_menu(self):
         print()  # Spacing blank line
         print("Please choose one of the following options:")
-        entry = input("1. Select puzzle\n2. Solve puzzle\n3. Show puzzle\n4. Configure normal or narrow column width\n5.\n6. Configure single or double lines around internal grids \n7. Backup/Restore puzzle\n8. Configure how to display values inside grid\n9. List unresolved spots and their possible values\n10. Select a spot and try one of its possible values\n11. Check puzzle sanity\n12. Quit game\nEnter selection: ")
+        entry = input("1. Select puzzle\n2. Solve puzzle\n3. Show puzzle\n4. Configure normal or narrow column width\n5.\n6. Configure single or double lines around internal grids \n7. Backup puzzle\n8. Configure how to display values inside grid\n9. List unresolved spots and their possible values\n10. Select a spot and try one of its possible values\n11. Check puzzle sanity\n12. Quit game\nEnter selection: ")
         if entry == "1":  # Select puzzle
             return entry
         elif entry == "2":  # Solve puzzle
@@ -108,7 +108,7 @@ class UserInput():
             print()  # Blank spacer line
             print("Choose puzzle to solve from either:")
             print("1. internal puzzles or")
-            print("2. from external CSV files")
+            print("2. from external file")
             entry = input("Enter 1 or 2: ")
             if entry == "1" or entry == "2":
                 valid_entry = True
@@ -255,19 +255,6 @@ class UserInput():
                 valid_reply = True  # Exit while loop
         return reply
  
-    def backup_or_restore_choice(self):
-        valid_reply = False
-        while not valid_reply:
-            print()  # Blank spacer line
-            print("Decide if")
-            print("1. Backup or")
-            print("2. Restore")
-            reply = input("Enter 1 or 2: ")
-            if reply == "1" or reply == "2":
-                valid_reply = True
-            else:
-                pass  # Prompt again for valid input
-        return reply
 
     def backup_menu(self):  # Get file location from user
         valid_reply = False
@@ -994,11 +981,21 @@ def main():
                     chosen_puzzle = ui.puzzle_menu()
                     width = ui.normal_column_width
                     p = Puzzle(chosen_puzzle, width)
-                if entry == "2":
+                elif entry == "2":  # Restore from file
+                    ui.puzzle_selected = True
+                    # chosen_puzzle = ui.puzzle_menu()
+                    #width = ui.normal_column_width
+                    p = Puzzle(chosen_puzzle, width)
+                    file = ui.restore_menu()
+                    # Workaround to solve "TypeError: cannot unpack non-iterable NoneType object
+                    # at end of file
+                    try:
+                        (k,v) =  ui.restore_data(file)
+                    except:
+                        pass
+                else:
                     pass
-
-
-        
+                
             if entry == "2":  # Solve
                 p.making_progress = True
                 while p.making_progress == True:
@@ -1033,21 +1030,10 @@ def main():
                 else:
                     pass
     
-            if entry == "7":  # Backup or restore puzzle
-                reply = ui.backup_or_restore_choice()
-                if reply == "1":
-                    backup_file = ui.backup_menu()
-                    p.backup(backup_file)
-                elif reply == "2":
-                    file = ui.restore_menu()
-                    # Workaround to solve "TypeError: cannot unpack non-iterable NoneType object
-                    # at end of file
-                    try:
-                        (k,v) =  ui.restore_data(file)
-                    except:
-                        pass
-                else:
-                    pass
+            if entry == "7":  # Backup puzzle
+                #reply = ui.backup_or_restore_choice()
+                backup_file = ui.backup_menu()
+                p.backup(backup_file)
                 
     
             if entry == "8":  # List possible values as 'a,b' without list brackets or spaces
