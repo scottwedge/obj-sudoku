@@ -222,12 +222,19 @@ class UserInput():
     def determine_column_width(self):  # Prompt user to select either normal (default) or narrow column width
         valid_reply = False
         while not valid_reply:  # Loop until valid selection
+            # Determine current column width setting
+            if self.normal_column_width:
+                width = "normal"
+            else:
+                width = "narrow"
             print()  # Blank line spacer
+            print("Current column width is: {}.".format(width)) 
             print("Configure the puzzle column width to be:")
             print("1. normal (default) width or")
             print("2. narrow width")
-            reply = input ("Enter 1 or 2: ")
-            if reply == "1" or reply == "2":
+            print("3. Exit (keep current width = {})".format(width))
+            reply = input ("Enter 1 or 2 or 3: ")
+            if reply == "1" or reply == "2" or reply == "3":
                 valid_reply = True  # Exit while loop
             else:
                 pass  # prompt again for valid reply
@@ -1021,6 +1028,8 @@ def main():
                     p.normal_column_width = True
                 elif reply == "2":  # Narrow width
                     p.normal_column_width = False
+                elif reply == "3":  # Exit and leave as is
+                    pass
                 else:
                     pass
                 
