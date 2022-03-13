@@ -59,6 +59,7 @@ class UserInput():
     def __init__(self):
         self.play_game = True
         self.normal_column_width = True  # "normal" == True (default);  "narrow" == False
+        self.use_single_line = True  # Default normal setting  (False = use double line around grids)
         self.puzzle_selected = False
 
     def start_menu(self):
@@ -231,7 +232,7 @@ class UserInput():
             print("Current column width is: {}.".format(width)) 
             print("Configure the puzzle column width to be:")
             print("1. normal (default) width or")
-            print("2. narrow width")
+            print("2. narrow width or")
             print("3. Exit (keep current width = {})".format(width))
             reply = input ("Enter 1 or 2 or 3: ")
             if reply == "1" or reply == "2" or reply == "3":
@@ -243,12 +244,20 @@ class UserInput():
     def determine_grid_side(self):  # Prompt user to select either single or two lines around internal grid 
         valid_reply = False
         while not valid_reply:  # Loop until user enters valid selection
+            # Determine current setting. Include that information in menu.
+            if self.use_single_line:
+                number_of_lines = "single line"
+            else:
+                number_of_lines = "double lines"
+
             print()  # Blank spacing line    
+            print("Currently configured as:", number_of_lines)
             print("Configure internal grid sides to be either:")
             print("1. single line (default) or")
-            print("2. double line")
-            reply = input("Enter 1 or 2: ")
-            if reply == "1" or reply == "2":
+            print("2. double line or")
+            print("3. Exit (leave current setting of {}".format(number_of_lines))
+            reply = input("Enter 1 or 2 or 3: ")
+            if reply == "1" or reply == "2" or reply == "3":
                 valid_reply = True  # Exit while loop
         return reply
  
@@ -374,9 +383,10 @@ class Spot():  #
         return con3
 
 class Puzzle():
-    def __init__(self, initial_values, width):
+    def __init__(self, initial_values, width, single_line):
         self.initial_values = initial_values
         self.normal_column_width = width  # set in UserInput.start_menu
+        self.use_single_line = single_line  # set in UserInput.
         self.num_spots = len(self.initial_values)  # Handle both 9x9 or 16x16 puzzle
         self.full_side = int(self.num_spots ** 0.5)  # Handle both 9x9 or 16x16 puzzle
         self.part_side = int(self.num_spots ** 0.25)  # Handle both 9x9 or 16x16 puzzle
@@ -388,7 +398,6 @@ class Puzzle():
         self.normal_divider_line = "+--+--+--+--+--+--+--+--+--+"  # Initialize value
         self.narrow_divider_double_line = "++===+===+===++"  # Initialize value
         self.normal_divider_double_line = "++=====+=====+=====++"  # Initialize value
-        self.use_single_line = True  # Highlight internal grid boundaries with single (default) line
         self.show_list_brackets = True  # Default display values as '[4, 5]'
         self.solved_spots = -1  # Initialize to invalid value
         self.unsolved_spots = -1  # Initialize to invalid value
@@ -983,10 +992,12 @@ def main():
                     ui.puzzle_selected = True
                     chosen_puzzle = ui.puzzle_menu()
                     width = ui.normal_column_width
-                    p = Puzzle(chosen_puzzle, width)
+                    single_line = ui.use_single_line
+                    p = Puzzle(chosen_puzzle, width, single_line)
                 elif entry == "2":  # Restore from file
                     ui.puzzle_selected = True
                     width = ui.normal_column_width
+                    single_line = ui.use_single_line
                     file = ui.restore_menu()
 
                     restored_puzzle = ui.restore_data(file)
@@ -994,7 +1005,7 @@ def main():
 #                    for j in restored_puzzle:  #DEBUG
 #                        print("DEBUG Type of j {}  is ____{}".format(j, type(j)))  #DEBUG
                     
-                    p = Puzzle(restored_puzzle, width)
+                    p = Puzzle(restored_puzzle, width, single_line)
 
                     for j in range(p.num_spots):  # Must correct 'known' setting for unknown spots/lists
                         if isinstance(p.puzz[j].get_con(), list):
@@ -1037,12 +1048,14 @@ def main():
             if entry == "5":  # not used
                 pass
     
-            if entry == "6":  # Configure lines around internal grids
-                reply = ui.determine_grid_side()  # Prompt user to decide lines around internal grid 
+            if entry == "6":  # Configure single or double lines around internal grids
+                reply = ui.determine_grid_side()  # Prompt user to decide number of lines around internal grids
                 if reply == "1":  # Single line (default)
                     p.use_single_line = True  
                 elif reply == "2":  # Double line (more visible)
                     p.use_single_line = False
+                elif reply == "3":  # Exit, leave as is
+                    pass
                 else:
                     pass
     
