@@ -15,17 +15,19 @@ def convert(v):  # Convert string to integer or list of integers
     if "[" not in v:  
         v = int(v)  # This is a single value of type string, not a list, so convert to integer
     else:
-        # This is a list so convert string to list of integers
+        # This was a list so convert string back to list of integers
         # Remove list open and list close brackets
         v = v.replace("[","")
         v = v.replace("]","")
         
         # Split string into list of numbers by splitting on commas
         list_of_string_numbers = v.split(sep = ",")
+        print("DEBUG  list of _____________", list_of_string_numbers)  #DEBUG
         
         integer_list = []  # Initialize list
         for j in list_of_string_numbers:
-            integer_list.append(int(j))
+            integer_list.append(int(j))  # Convert to integer and append to list
+        v = integer_list
     return v
 
 
@@ -983,7 +985,7 @@ def main():
                     restored_puzzle = ui.restore_data(file)
                     print("DEBUG restored_puzzle is ____",restored_puzzle)  #DEBUG
                     for j in restored_puzzle:  #DEBUG
-                        print("DEBUG Type of j is ____", type(j))  #DEBUG
+                        print("DEBUG Type of j {}  is ____{}".format(j, type(j)))  #DEBUG
                     
                     p = Puzzle(restored_puzzle, width)
 
