@@ -52,18 +52,6 @@ def strip_and_split(n):
     return (k,v)
 
 
-def string_to_dict(n):  # Convert string from set values to dictionary values
-    print(n)
-    n = n.replace("(","")  # Remove opening "(" character
-    n = n.replace(")","")  # Remove trailing ")" character
-    n = n.replace(" ","")  # Remove all blank spaces in string
-    
-    (k, v) = n.split(sep = ",", maxsplit = 1)
-    k = int(k)  # Convert k from string to integer
-    v = convert(v)  # Convert v from string to integer or list of integers
-    return (k, v)
-
-
 # Classes
 class UserInput():
     def __init__(self):
@@ -279,13 +267,20 @@ class UserInput():
                 print("That file does not exist! Choose another.")
         return restore_file
             
-    def restore_data(self, file):
+    def restore_data(self, file):  # Restore all data and return as puzzle list
         self.file = file
+        d = dict()  # Initialize dictionary
         with open(self.file, "r") as f:
             content = f.readlines()
         for line in content:
-             print(line)
-#            (key, value) = strip_and_split(line)
+            (key, value) = strip_and_split(line)
+            d[key] = value
+
+        restored_puzzle = []  # Initialize restored puzzle list
+        for j in range(len(d)):
+            restored_puzzle.append(d[j])
+
+        return restored_puzzle
  
 
 class Spot():  # 
@@ -983,16 +978,12 @@ def main():
                     p = Puzzle(chosen_puzzle, width)
                 elif entry == "2":  # Restore from file
                     ui.puzzle_selected = True
-                    # chosen_puzzle = ui.puzzle_menu()
-                    #width = ui.normal_column_width
-                    p = Puzzle(chosen_puzzle, width)
+                    width = ui.normal_column_width
                     file = ui.restore_menu()
-                    # Workaround to solve "TypeError: cannot unpack non-iterable NoneType object
-                    # at end of file
-                    try:
-                        (k,v) =  ui.restore_data(file)
-                    except:
-                        pass
+
+                    restored_puzzle = ui.restore_data(file)
+                    
+                    p = Puzzle(restored_puzzle, width)
                 else:
                     pass
                 
