@@ -22,7 +22,7 @@ def convert(v):  # Convert string to integer or list of integers
         
         # Split string into list of numbers by splitting on commas
         list_of_string_numbers = v.split(sep = ",")
-        print("DEBUG  list of _____________", list_of_string_numbers)  #DEBUG
+#        print("DEBUG  list of _____________", list_of_string_numbers)  #DEBUG
         
         integer_list = []  # Initialize list
         for j in list_of_string_numbers:
@@ -613,7 +613,7 @@ class Puzzle():
         for j in range(self.num_spots):
             if self.puzz[j].get_known() == True:
                 l = 1  # Length = 1 since value already known
-                print("DEBUG_______ spot {} is known".format(j))  #DEBUG
+#                print("DEBUG_______ spot {} is known".format(j))  #DEBUG
             else:
                 col = j % self.full_side  # Determine column
                 l = len(self.puzz[j].get_con())
@@ -983,18 +983,18 @@ def main():
                     file = ui.restore_menu()
 
                     restored_puzzle = ui.restore_data(file)
-                    print("DEBUG restored_puzzle is ____",restored_puzzle)  #DEBUG
-                    for j in restored_puzzle:  #DEBUG
-                        print("DEBUG Type of j {}  is ____{}".format(j, type(j)))  #DEBUG
+#                    print("DEBUG restored_puzzle is ____",restored_puzzle)  #DEBUG
+#                    for j in restored_puzzle:  #DEBUG
+#                        print("DEBUG Type of j {}  is ____{}".format(j, type(j)))  #DEBUG
                     
                     p = Puzzle(restored_puzzle, width)
 
-                    for j in range(p.num_spots):  # Must correct 'known' setting for unknown spots
-                        if len(p.puzz[j].get_con()) > 1:
+                    for j in range(p.num_spots):  # Must correct 'known' setting for unknown spots/lists
+                        if isinstance(p.puzz[j].get_con(), list):
                             p.puzz[j].set_known(False)
 
                     cw = p.calc_column_widths()  # Calculate maximum width of every column  #DEBUG
-                    print("DEBUG column widths ____________", cw)  #DEBUG
+#                    print("DEBUG column widths ____________", cw)  #DEBUG
 
                     # Set other variables for restored puzzle
                     p.state = "Restored"
