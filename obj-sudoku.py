@@ -22,7 +22,6 @@ def convert(v):  # Convert string to integer or list of integers
         
         # Split string into list of numbers by splitting on commas
         list_of_string_numbers = v.split(sep = ",")
-#        print("DEBUG  list of _____________", list_of_string_numbers)  #DEBUG
         
         integer_list = []  # Initialize list
         for j in list_of_string_numbers:
@@ -40,16 +39,11 @@ def strip_and_split(n):
     # Now split the set at first comma
     (k,v) = n.split(sep = ",", maxsplit = 1)
     
-#    print("K = {}".format(k))  # DEBUG
-#    print("V = {}".format(v))  # DEBUG
-    
     # Convert key string to integer
     k = int(k)
 
     # Convert from string to integer or list of integers
     v = convert(v)
-
-#    print("KV is _____________ {}".format((k,v)))  # DEBUG
 
     return (k,v)
 
@@ -629,7 +623,6 @@ class Puzzle():
         for j in range(self.num_spots):
             if self.puzz[j].get_known() == True:
                 l = 1  # Length = 1 since value already known
-#                print("DEBUG_______ spot {} is known".format(j))  #DEBUG
             else:
                 col = j % self.full_side  # Determine column
                 l = len(self.puzz[j].get_con())
@@ -821,7 +814,6 @@ class Puzzle():
         after_columns_solving_total = self.calc_num_possible_values()
         self.solve_grid_singles()
         after_grids_solving_total = self.calc_num_possible_values()
-#        print("PROGRESS STATE = {}".format(self.making_progress))  #DEBUG
         self.solve_pairs()
 
     def check_sanity(self):  # Determine if puzzle still sane after guess a value for spot(s)
@@ -1001,9 +993,6 @@ def main():
                     file = ui.restore_menu()
 
                     restored_puzzle = ui.restore_data(file)
-#                    print("DEBUG restored_puzzle is ____",restored_puzzle)  #DEBUG
-#                    for j in restored_puzzle:  #DEBUG
-#                        print("DEBUG Type of j {}  is ____{}".format(j, type(j)))  #DEBUG
                     
                     p = Puzzle(restored_puzzle, width, single_line)
 
@@ -1011,8 +1000,7 @@ def main():
                         if isinstance(p.puzz[j].get_con(), list):
                             p.puzz[j].set_known(False)
 
-                    cw = p.calc_column_widths()  # Calculate maximum width of every column  #DEBUG
-#                    print("DEBUG column widths ____________", cw)  #DEBUG
+                    cw = p.calc_column_widths()  # Calculate maximum width of every column  
 
                     # Set other variables for restored puzzle
                     p.state = "Restored"
