@@ -258,7 +258,16 @@ class UserInput():
 
     def backup_menu(self):  # Get file location from user
         valid_reply = False
-        while not valid_reply:
+        while not valid_reply:  # Loop until user decides between Text or CSV file type
+            print()  # Blank line
+            print("Backup as:")
+            print("1. Text file or")
+            print("2. CSV file")
+            file_type_reply = input("Enter 1 or 2.")
+            if file_type_reply == "1" or file_type_reply == "2":
+                valid_reply = True
+        valid_reply = False
+        while not valid_reply:  # Loop until user enters valid backup file name
             print()  # Blank spacer line
             backup_file = input("Enter file location for backup: ")
             if os.path.exists(backup_file):  # If file exists
