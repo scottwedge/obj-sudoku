@@ -7,6 +7,7 @@
 import copy  # Need to perform 'copy.copy' operation to assign unique list to all unknown spots
 import time  #DEBUG insert delays to help figure out repeated looping
 import os.path  # Use 'exists' to determine if file exists or not
+import csv  # Add ability to backup and restore files in CSV format
 
 
 # Functions
@@ -260,10 +261,10 @@ class UserInput():
         valid_reply = False
         while not valid_reply:  # Loop until user decides between Text or CSV file type
             print()  # Blank line
-            print("Backup as:")
+            print("Choose backup file format:")
             print("1. Text file or")
             print("2. CSV file")
-            file_type_reply = input("Enter 1 or 2.")
+            file_type_reply = input("Enter 1 or 2: ")
             if file_type_reply == "1" or file_type_reply == "2":
                 valid_reply = True
         valid_reply = False
@@ -274,7 +275,7 @@ class UserInput():
                 print("This file already exists, choose a new location!")
             else:
                 valid_reply = True
-        return backup_file
+        return (file_type_reply, backup_file)
         
 
     def restore_menu(self):  # Get valid file location from user
@@ -965,13 +966,21 @@ class Puzzle():
         else:
             pass
 
-    def backup(self, file):  # Backup puzzle to file location
+    def backup_text(self, file):  # Backup puzzle in Text format to file location
         self.file = file
         with open(self.file, "a") as f:
             for j in range(self.num_spots):
                 s = set() 
                 s = (j, self.puzz[j].get_con())
                 f.writelines(str(s) + "\n")
+
+    def backup_csv(self, file):  # Backup puzzle in CSV format
+        self.file = file
+        with open(self.file) as f:
+            csv_writer = csv.writer(f)
+            for j in p:
+                csv_writer.writerow(j)
+
 
     def restore(self, file):  # Restore puzzle from file location
         self.file = file
@@ -1058,8 +1067,13 @@ def main():
     
             if entry == "7":  # Backup puzzle
                 #reply = ui.backup_or_restore_choice()
-                backup_file = ui.backup_menu()
-                p.backup(backup_file)
+                (file_type_reply, backup_file) = ui.backup_menu()
+                if file_type_reply == "1":
+                    p.backup_text(backup_file)
+                elif file_type_reply == "2":
+                    p.backup_csv(backup_file)
+                else:
+                    pass
                 
     
             if entry == "8":  # List possible values as 'a,b' without list brackets or spaces
