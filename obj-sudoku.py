@@ -829,6 +829,9 @@ class Puzzle():
     def check_sanity(self):  # Determine if puzzle still sane after guess a value for spot(s)
         # Verify that maximum of only one count of every value in every row, column or internal grid
         # Otherwise the grid is insane and the last guess was incorrect
+
+        print()  # Blank spacer line
+        print("Puzzle sanity results:")
         (sane_row, reason_row) = self.check_row_sanity()
         if sane_row:
             print("Rows are sane")
@@ -968,19 +971,27 @@ class Puzzle():
 
     def backup_text(self, file):  # Backup puzzle in Text format to file location
         self.file = file
-        with open(self.file, "a") as f:
-            for j in range(self.num_spots):
-                s = set() 
-                s = (j, self.puzz[j].get_con())
-                f.writelines(str(s) + "\n")
+        try:
+            with open(self.file, "a") as f:
+                for j in range(self.num_spots):
+                    s = set() 
+                    s = (j, self.puzz[j].get_con())
+                    f.writelines(str(s) + "\n")
+        except FileNotFoundError:
+            print()  # Blank space line
+            print("File or directory '{}' not found!".format(self.file))  # Tell user about issue
 
     def backup_csv(self, file):  # Backup puzzle in CSV format
         self.file = file
-        with open(self.file) as f:
-            csv_writer = csv.writer(f)
-            for j in p:
-                csv_writer.writerow(j)
-
+        try:
+            with open(self.file) as f:
+                csv_writer = csv.writer(f)
+                for j in p:
+                    csv_writer.writerow(j)
+        except FileNotFoundError:  
+            print()  # Blank space line
+            print("File or directory '{}' not found!".format(self.file))  # Tell user about issue
+            
 
     def restore(self, file):  # Restore puzzle from file location
         self.file = file
