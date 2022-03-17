@@ -834,21 +834,21 @@ class Puzzle():
         print("Puzzle sanity results:")
         (sane_row, reason_row) = self.check_row_sanity()
         if sane_row:
-            print("Rows are sane")
+            print("\033[1mRows are sane.\033[0m")
         else:
-            print("Rows are NOT sane because {}".format(reason_row))
+            print("\033[6mRows are NOT sane because: {}\033[0m".format(reason_row))
          
         (sane_column, reason_column) = self.check_column_sanity()
         if sane_column:
-            print("Columns are sane")
+            print("\033[1mColumns are sane.\033[0m")
         else:
-            print("Columns are NOT sane because {}".format(reason_column))
+            print("\033[6mColumns are NOT sane because: {}\033[0m".format(reason_column))
 
         (sane_grid, reason_grid) = self.check_grid_sanity()
         if sane_grid:
-            print("Grids are sane")
+            print("\033[1mInternal grids are sane.\033[0m")
         else:
-            print("Grids are NOT sane because {}".format(reason_grid))
+            print("\033[6mGrids are NOT sane because: {}\033[0m".format(reason_grid))
         return sane_row and sane_column and sane_grid  # False if any are False
 
     def reset_counters(self):  # Reset all dictionary values to zero
@@ -945,6 +945,7 @@ class Puzzle():
         # Revert to pre-guess version of puzzle
         self.p = p
 
+        print()  # Blank spacer line
         reply = input("Do you want to revert to pre-guess puzzle values?  yY/nN: ")
         if reply == "N" or reply == "n":
             self.p = copy.deepcopy(self.g)
