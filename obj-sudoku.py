@@ -941,16 +941,6 @@ class Puzzle():
             (g, h) = padded_guesses_list[j + 3]
             print("{:{}}{:{}}{:{}}{:{}}{:{}}{:{}}{:{}}{:{}}".format(str(a), w1,str(b), w2, str(c), w1, str(d), w2, str(e), w1, str(f), w2, str(g), w1, str(h), w2))
 
-    def revert(self, p):
-        # Revert to pre-guess version of puzzle
-        self.p = p
-
-        print()  # Blank spacer line
-        reply = input("Do you want to revert to pre-guess puzzle values?  yY/nN: ")
-        if reply == "N" or reply == "n":
-            self.p = copy.deepcopy(self.g)
-        else:
-            pass  # Future references to 'p' instead of 'g'
 
     def remove_invalid(self, spot, value):
         self.spot = spot
@@ -1100,12 +1090,13 @@ def main():
                     print("Spot {} contains {}".format(j, guesses[j]))
     
             if entry == "10":
-                # In 'p', list unresolved spots and their content and prompt user to select a guess
-                # Make a copy 'g' of the current puzzle and then alter copy with the guess
+                # In puzzle 'p', list unresolved spots and their content and prompt user to select a guess
+                # Make a copy 'g' of the current puzzle and then alter copy 'g' with the guess
                 # Automatically restart solving the puzzle and check result for sanity
                 # If insane, offer to revert to previous version 'p' of puzzle and delete value that
-                #   made puzzle insane.
-                # If sane, overwrite original 'p' with 'g' and continue guessing
+                #   made puzzle insane or continue and overwrite 'p' with 'g'.
+                # If sane, don't offer to revert to 'g' and instead overwrite original 'p' with 'g' 
+                #   and continue 
                 guesses = p.unsolved_spot_guesses()
                 p.list_spot_and_guesses(guesses)
     
@@ -1129,9 +1120,13 @@ def main():
                 sane = g.check_sanity()
                 if sane:  # So overwrite original 'p' with updated with guess 'g' version of puzzle
                     p = copy.deepcopy(g)
-                else:  
-                    g.revert(p)
-                    p.remove_invalid(spot_entry, guess_value) 
+                else:  # Case = Insane
+                    print()  # Blank spacer line
+                    reply = input("Do you want to revert to pre-guess puzzle values?  yY/nN: ")
+                    if reply == "N" or reply == "n":
+                        p = copy.deepcopy(g)
+                    else:
+                        p.remove_invalid(spot_entry, guess_value) 
     
             if entry == "11":  # 
                 p.check_sanity()
