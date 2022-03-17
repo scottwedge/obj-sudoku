@@ -54,7 +54,7 @@ class UserInput():
     def __init__(self):
         self.play_game = True
         self.normal_column_width = True  # "normal" == True (default);  "narrow" == False
-        self.use_single_line = True  # Default normal setting  (False = use double line around grids)
+        self.single_line = True  # Default normal setting  (False = use double line around grids)
         self.puzzle_selected = False
 
     def start_menu(self):
@@ -236,21 +236,22 @@ class UserInput():
                 pass  # prompt again for valid reply
         return reply
 
-    def determine_grid_side(self):  # Prompt user to select either single or two lines around internal grid 
+    def determine_grid_side(self, number_lines):  # Prompt user to select either single or two lines around internal grid 
+        self.number_lines = number_lines
         valid_reply = False
         while not valid_reply:  # Loop until user enters valid selection
             # Determine current setting. Include that information in menu.
-            if self.use_single_line:
+            if self.number_lines:
                 number_of_lines = "single line"
             else:
                 number_of_lines = "double lines"
 
             print()  # Blank spacing line    
-            print("Currently configured as:", number_of_lines)
+            print("Currently configured as: \033[1m{}\033[0m.".format(number_of_lines))
             print("Configure internal grid sides to be either:")
             print("1. single line (default) or")
             print("2. double line or")
-            print("3. Exit (leave current setting of {}".format(number_of_lines))
+            print("3. Exit (leave current setting of {}).".format(number_of_lines))
             reply = input("Enter 1 or 2 or 3: ")
             if reply == "1" or reply == "2" or reply == "3":
                 valid_reply = True  # Exit while loop
@@ -1004,12 +1005,12 @@ def main():
                     ui.puzzle_selected = True
                     chosen_puzzle = ui.puzzle_menu()
                     width = ui.normal_column_width
-                    single_line = ui.use_single_line
+                    single_line = ui.single_line
                     p = Puzzle(chosen_puzzle, width, single_line)
                 elif entry == "2":  # Restore from file
                     ui.puzzle_selected = True
                     width = ui.normal_column_width
-                    single_line = ui.use_single_line
+                    single_line = ui.single_line
                     file = ui.restore_menu()
 
                     restored_puzzle = ui.restore_data(file)
@@ -1057,7 +1058,7 @@ def main():
                 pass
     
             if entry == "6":  # Configure single or double lines around internal grids
-                reply = ui.determine_grid_side()  # Prompt user to decide number of lines around internal grids
+                reply = ui.determine_grid_side(p.use_single_line)  # Prompt user to decide number of lines around internal grids
                 if reply == "1":  # Single line (default)
                     p.use_single_line = True  
                 elif reply == "2":  # Double line (more visible)
