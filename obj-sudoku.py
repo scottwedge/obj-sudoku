@@ -977,10 +977,12 @@ class Puzzle():
     def backup_csv(self, file):  # Backup puzzle in CSV format
         self.file = file
         try:
-            with open(self.file) as f:
-                csv_writer = csv.writer(f)
-                for j in p:
-                    csv_writer.writerow(j)
+            with open(self.file, "w", newline = "") as f:
+                csv_writer = csv.writer(f, delimiter = ",", quotechar = "|")
+                for j in range(self.num_spots):
+                    s = set() 
+                    s = (j, self.puzz[j].get_con())
+                    csv_writer.writerow(s)
         except FileNotFoundError:  
             print()  # Blank space line
             print("File or directory '{}' not found!".format(self.file))  # Tell user about issue
