@@ -94,9 +94,10 @@ class UserInput():
             print()  # Blank spacer line
             print("Choose puzzle to solve from either:")
             print("1. internal puzzles or")
-            print("2. from external file")
-            entry = input("Enter 1 or 2: ")
-            if entry == "1" or entry == "2":
+            print("2. from external text file")
+            print("3. from external CSV file")
+            entry = input("Enter 1 or 2 or 3: ")
+            if entry == "1" or entry == "2" or entry == "3":
                 valid_entry = True
         return entry
 
@@ -290,7 +291,7 @@ class UserInput():
                 print("That file does not exist! Choose another.")
         return restore_file
             
-    def restore_data(self, file):  # Restore all data and return as puzzle list
+    def restore_text_data(self, file):  # Restore from text file and return as puzzle list
         self.file = file
         d = dict()  # Initialize dictionary
         with open(self.file, "r") as f:
@@ -305,6 +306,24 @@ class UserInput():
 
         return restored_puzzle
  
+    def restore_csv_data(self, file):  # Restore data from CSV file format
+        self.file = file
+        d = dict()  # Initialize dictionary
+        puzzle = []  # Initialize list
+        with open(self.file, newline = "") as f:
+            csv_reader = csv.reader(f, delimiter = ",", quotechar = "|")
+            for row in csv_reader:
+                k,v = row
+                d[k] = v
+                print("DEBUG_____________",k,d[k])
+        
+        for j in range(len(d)):
+            puzzle.append(d[j])
+            print(d[j])  #DEBUG
+
+        print(puzzle)  # DEBUG
+        return puzzle
+
 
 class Spot():  # 
     def __init__(self, num, known, contents, row, column, grid):
@@ -1003,20 +1022,25 @@ def main():
    
         try: 
             if entry == "1":
-                entry = ui.internal_or_external_puzzle()  # Decide on (1) internal or (2) external
+                # Decide on (1) internal or (2) external text or (3) external CSV file
+                entry = ui.internal_or_external_puzzle()  
                 if entry == "1":
                     ui.puzzle_selected = True
                     chosen_puzzle = ui.puzzle_menu()
                     width = ui.normal_column_width
                     single_line = ui.single_line
                     p = Puzzle(chosen_puzzle, width, single_line)
-                elif entry == "2":  # Restore from file
+                elif entry == "2" or entry == "3":  # Restore from file
                     ui.puzzle_selected = True
                     width = ui.normal_column_width
                     single_line = ui.single_line
                     file = ui.restore_menu()
 
-                    restored_puzzle = ui.restore_data(file)
+                    # Determine if restoring text or CSV format data file
+                    if entry == "2":  # Restoring text file
+                        restored_puzzle = ui.restore_text_data(file)
+                    else:  # (Entry = 3: restoring from CSV file)
+                        restored_puzzle = ui.restore_csv_data(file)
                     
                     p = Puzzle(restored_puzzle, width, single_line)
 
