@@ -927,6 +927,7 @@ class Puzzle():
                 padded_guesses_list.append(("",""))
  
         print("Number of unresolved spots is {}.".format(l))
+
         print()  # Spacer line
         print("Unresolved spots and contents are:")
         w1 = 5  # Format width for spot number
@@ -1099,35 +1100,41 @@ def main():
                 # If sane, don't offer to revert to 'g' and instead overwrite original 'p' with 'g' 
                 #   and continue 
                 guesses = p.unsolved_spot_guesses()
-                p.list_spot_and_guesses(guesses)
-    
-                spot_entry = ui.choose_unresolved_spot(guesses)  # Select spot for guess
-                guess_value = ui.guess_unresolved_value(guesses, spot_entry)  # Select value for guess
-    
-                g = copy.deepcopy(p)  # Make copy of stalled puzzle; try guess on copy  # Need deepcopy
-                g.puzz[spot_entry].set_con(guess_value)   # Set new value
-                g.puzz[spot_entry].set_known(True)   # Set to True
-                g.making_progress = True  # Must switch from False or will not try to solve again
-    
-                while g.making_progress == True:
-                    g.solve_all()
+
+                if len(guesses) != 0:
+                    p.list_spot_and_guesses(guesses)
         
-                g.display_puzzle()
-                print()
-                g.show_state()
-                g.calc_solved_counts()
-                g.show_solved_unsolved_counts()
-    
-                sane = g.check_sanity()
-                if sane:  # So overwrite original 'p' with updated with guess 'g' version of puzzle
-                    p = copy.deepcopy(g)
-                else:  # Case = Insane
-                    print()  # Blank spacer line
-                    reply = input("Do you want to revert to pre-guess puzzle values?  yY/nN: ")
-                    if reply == "N" or reply == "n":
+                    spot_entry = ui.choose_unresolved_spot(guesses)  # Select spot for guess
+                    guess_value = ui.guess_unresolved_value(guesses, spot_entry)  # Select value for guess
+        
+                    g = copy.deepcopy(p)  # Make copy of stalled puzzle; try guess on copy  # Need deepcopy
+                    g.puzz[spot_entry].set_con(guess_value)   # Set new value
+                    g.puzz[spot_entry].set_known(True)   # Set to True
+                    g.making_progress = True  # Must switch from False or will not try to solve again
+        
+                    while g.making_progress == True:
+                        g.solve_all()
+            
+                    g.display_puzzle()
+                    print()
+                    g.show_state()
+                    g.calc_solved_counts()
+                    g.show_solved_unsolved_counts()
+        
+                    sane = g.check_sanity()
+                    if sane:  # So overwrite original 'p' with updated with guess 'g' version of puzzle
                         p = copy.deepcopy(g)
-                    else:
-                        p.remove_invalid(spot_entry, guess_value) 
+                    else:  # Case = Insane
+                        print()  # Blank spacer line
+                        reply = input("Do you want to revert to pre-guess puzzle values?  yY/nN: ")
+                        if reply == "N" or reply == "n":
+                            p = copy.deepcopy(g)
+                        else:
+                            p.remove_invalid(spot_entry, guess_value) 
+                else:
+                    print()  # Blank spacer line
+                    print("There are no spots to choose from.")
+
     
             if entry == "11":  # 
                 p.check_sanity()
