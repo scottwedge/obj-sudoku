@@ -314,14 +314,16 @@ class UserInput():
             csv_reader = csv.reader(f, delimiter = ",", quotechar = "|")
             for row in csv_reader:
                 k,v = row
+                k = int(k)  # Convert from string to integer
+                v = convert(v)  # Convert from string to integer or list of integers
                 d[k] = v
-                print("DEBUG_____________",k,d[k])
-        
-        for j in range(len(d)):
-            puzzle.append(d[j])
-            print(d[j])  #DEBUG
 
-        print(puzzle)  # DEBUG
+        for j in range(len(d)):
+            try:
+                puzzle.append(d[j])
+            except KeyError:
+                pass
+
         return puzzle
 
 
