@@ -293,6 +293,12 @@ class UserInput():
             
     def restore_text_data(self, file):  # Restore from text file and return as puzzle list
         self.file = file
+
+        file_type = self.is_text_file_type(self.file)  # Check if selected file is text or CSV format
+        if not file_type:  # This looks like a CSV format file
+            print("\033[6m \033[7mWARNING: This file seems to contain CSV format data!\033[0m")
+            time.sleep(5)  # Add delay so flashing warning can be seen before display exception error
+
         d = dict()  # Initialize dictionary
         with open(self.file, "r") as f:
             content = f.readlines()
@@ -308,6 +314,12 @@ class UserInput():
  
     def restore_csv_data(self, file):  # Restore data from CSV file format
         self.file = file
+
+        file_type = self.is_text_file_type(self.file)  # Check if selected file is text or CSV format
+        if file_type:  # This looks like a Text format file
+            print("\033[6m \033[7mWARNING: This file seems to contain Text format data!\033[0m")
+            time.sleep(5)  # Add delay so flashing warning can be seen before display exception error
+
         d = dict()  # Initialize dictionary
         puzzle = []  # Initialize list
         with open(self.file, newline = "") as f:
@@ -326,6 +338,22 @@ class UserInput():
 
         return puzzle
 
+    def is_text_file_type(self, file):  # Check if selected file is text or CSV format
+        # Text file has contents like:
+        # (0, 6)       always has brackets ( and ) and always has a space after the ","
+        # (2, [4, 7])
+        # 
+        # CSV format file has contents like:
+        # 0,6         never has brackets ( or ) and does not have a space after the first "," 
+        # 2,|[4, 7]|    and always has a "|" before and after a list of values
+
+        self.file = file
+        if "(" in self.file:
+            text_file_type = True
+        else:
+            text_file_type = False
+        
+        return text_file_type
 
 class Spot():  # 
     def __init__(self, num, known, contents, row, column, grid):
@@ -1014,16 +1042,6 @@ class Puzzle():
         with open(self.file, "r") as f:
             p = f.read(self.file)
         return p
-
-    def determine_file_type(self, file):  # Check if selected file is text or CSV format
-        # Text file has contents like:
-        # (0, 6)  always has brackets ( and ) and always has a space after the ","
-        # (2, [4, 7])
-        # 
-        # CSV format file has contents like:
-        # 0,6  never has brackets ( or ) and does not have a space after the ","
-        # 2,|[4, 7]|    and always has a "|" before and after a list of values
-
 
 
 def main():
