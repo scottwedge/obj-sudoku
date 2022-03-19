@@ -348,10 +348,14 @@ class UserInput():
         # 2,|[4, 7]|    and always has a "|" before and after a list of values
 
         self.file = file
-        if "(" in self.file:
-            text_file_type = True
-        else:
-            text_file_type = False
+        with open(self.file, "r") as f:
+            contents = f.read()
+            if "(" in contents:
+                print("DEBUG ________'(' in contents")  #DEBUG
+                text_file_type = True
+            else:
+                print("DEBUG ________'(' NOT in contents")  #DEBUG
+                text_file_type = False
         
         return text_file_type
 
