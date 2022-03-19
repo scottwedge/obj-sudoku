@@ -1015,6 +1015,17 @@ class Puzzle():
             p = f.read(self.file)
         return p
 
+    def determine_file_type(self, file):  # Check if selected file is text or CSV format
+        # Text file has contents like:
+        # (0, 6)  always has brackets ( and ) and always has a space after the ","
+        # (2, [4, 7])
+        # 
+        # CSV format file has contents like:
+        # 0,6  never has brackets ( or ) and does not have a space after the ","
+        # 2,|[4, 7]|    and always has a "|" before and after a list of values
+
+
+
 def main():
    
     ui = UserInput()
