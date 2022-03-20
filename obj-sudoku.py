@@ -345,7 +345,7 @@ class UserInput():
             integer_list = []  # Initialize list
             for j in list_of_string_numbers:
                 integer_list.append(int(j))  # Convert to integer and append to list
-            v = integer_list
+            self.v = integer_list
         return self.v
     
     
