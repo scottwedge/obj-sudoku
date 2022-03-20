@@ -10,45 +10,6 @@ import os.path  # Use 'exists' to determine if file exists or not
 import csv  # Add ability to backup and restore files in CSV format
 
 
-# Functions
-    
-def convert(v):  # Convert string to integer or list of integers
-    if "[" not in v:  
-        v = int(v)  # This is a single value of type string, not a list, so convert to integer
-    else:
-        # This was a list so convert string back to list of integers
-        # Remove list open and list close brackets
-        v = v.replace("[","")
-        v = v.replace("]","")
-        
-        # Split string into list of numbers by splitting on commas
-        list_of_string_numbers = v.split(sep = ",")
-        
-        integer_list = []  # Initialize list
-        for j in list_of_string_numbers:
-            integer_list.append(int(j))  # Convert to integer and append to list
-        v = integer_list
-    return v
-
-
-def strip_and_split(n):
-    n = n.strip()
-    n = n.replace("(","")  # Remove opening "(" from string
-    n = n.replace(")","")  # Remove closing ")" from string
-    n = n.replace(" ","")  # Remove all blanks from string
-
-    # Now split the set at first comma
-    (k,v) = n.split(sep = ",", maxsplit = 1)
-    
-    # Convert key string to integer
-    k = int(k)
-
-    # Convert from string to integer or list of integers
-    v = convert(v)
-
-    return (k,v)
-
-
 # Classes
 class UserInput():
     def __init__(self):
@@ -303,7 +264,7 @@ class UserInput():
         with open(self.file, "r") as f:
             content = f.readlines()
         for line in content:
-            (key, value) = strip_and_split(line)
+            (key, value) = self.strip_and_split(line)
             d[key] = value
 
         restored_puzzle = []  # Initialize restored puzzle list
@@ -327,7 +288,7 @@ class UserInput():
             for row in csv_reader:
                 k,v = row
                 k = int(k)  # Convert from string to integer
-                v = convert(v)  # Convert from string to integer or list of integers
+                v = self.convert(v)  # Convert from string to integer or list of integers
                 d[k] = v
 
         for j in range(len(d)):
@@ -358,6 +319,50 @@ class UserInput():
                 text_file_type = False
         
         return text_file_type
+
+
+    
+    def convert(self, v):  # Convert string to integer or list of integers
+        self.v = v
+        if "[" not in self.v:  
+            self.v = int(self.v)  # This is a single value of type string, not a list, so convert to integer
+        else:
+            # This was a list so convert string back to list of integers
+            # Remove list open and list close brackets
+            self.v = self.v.replace("[","")
+            self.v = self.v.replace("]","")
+            print("DEBUG self.v = _____", self.v)  #DEBUG
+            
+            # Split string into list of numbers by splitting on commas
+            list_of_string_numbers = self.v.split(sep = ",")
+            
+            integer_list = []  # Initialize list
+            for j in list_of_string_numbers:
+                print("DEBUG list_of_string_numbers = ___", list_of_string_numbers)  #DEBUG
+                integer_list.append(int(j))  # Convert to integer and append to list
+            v = integer_list
+        return self.v
+    
+    
+    def strip_and_split(self, n):
+        self.n = n
+        self.n = self.n.strip()
+        self.n = self.n.replace("(","")  # Remove opening "(" from string
+        self.n = self.n.replace(")","")  # Remove closing ")" from string
+        self.n = self.n.replace(" ","")  # Remove all blanks from string
+    
+        # Now split the set at first comma
+        (self.k,self.v) = self.n.split(sep = ",", maxsplit = 1)
+        
+        # Convert key string to integer
+        self.k = int(self.k)
+    
+        # Convert from string to integer or list of integers
+        self.v = self.convert(self.v)
+    
+        return (self.k,self.v)
+
+
 
 class Spot():  # 
     def __init__(self, num, known, contents, row, column, grid):
