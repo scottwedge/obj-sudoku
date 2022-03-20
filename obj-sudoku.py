@@ -241,11 +241,20 @@ class UserInput():
         return (file_type_reply, backup_file)
         
 
-    def restore_menu(self):  # Get valid file location from user
+    def restore_menu(self, entry):  # Get valid file location from user
+        self.entry = entry
+        if self.entry == "2":
+            file_type = "Text"
+        elif self.entry == "3":
+            file_type = "CSV"
+        else:
+            pass    # Should not get here
+
         valid_reply = False
         while not valid_reply:
             print()  # Blank spacer line
-            restore_file = input("Enter file to restore: ")
+            restore_file = input("Enter {} file to restore: ".format(file_type))
+            restore_file = restore_file.strip()  # Remove any trailing spaces
             if os.path.exists(restore_file):
                 valid_reply = True
             else:
@@ -1070,7 +1079,7 @@ def main():
                     ui.puzzle_selected = True
                     width = ui.normal_column_width
                     single_line = ui.single_line
-                    file = ui.restore_menu()
+                    file = ui.restore_menu(entry) 
 
                     # Determine if restoring text or CSV format data file
                     if entry == "2":  # Restoring text file
