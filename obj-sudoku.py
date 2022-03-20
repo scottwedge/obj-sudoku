@@ -312,10 +312,8 @@ class UserInput():
         with open(self.file, "r") as f:
             contents = f.read()
             if "(" in contents:
-                print("DEBUG ________'(' in contents")  #DEBUG
                 text_file_type = True
             else:
-                print("DEBUG ________'(' NOT in contents")  #DEBUG
                 text_file_type = False
         
         return text_file_type
@@ -331,14 +329,12 @@ class UserInput():
             # Remove list open and list close brackets
             self.v = self.v.replace("[","")
             self.v = self.v.replace("]","")
-            print("DEBUG self.v = _____", self.v)  #DEBUG
             
             # Split string into list of numbers by splitting on commas
             list_of_string_numbers = self.v.split(sep = ",")
             
             integer_list = []  # Initialize list
             for j in list_of_string_numbers:
-                print("DEBUG list_of_string_numbers = ___", list_of_string_numbers)  #DEBUG
                 integer_list.append(int(j))  # Convert to integer and append to list
             v = integer_list
         return self.v
@@ -346,7 +342,7 @@ class UserInput():
     
     def strip_and_split(self, n):
         self.n = n
-        self.n = self.n.strip()
+        self.n = self.n.strip()  # Remove all white space
         self.n = self.n.replace("(","")  # Remove opening "(" from string
         self.n = self.n.replace(")","")  # Remove closing ")" from string
         self.n = self.n.replace(" ","")  # Remove all blanks from string
@@ -357,7 +353,7 @@ class UserInput():
         # Convert key string to integer
         self.k = int(self.k)
     
-        # Convert from string to integer or list of integers
+        # Convert from value string to integer or list of integers
         self.v = self.convert(self.v)
     
         return (self.k,self.v)
