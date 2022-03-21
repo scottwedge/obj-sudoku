@@ -1212,7 +1212,7 @@ def main():
         
         except UnboundLocalError:
             print()  # Blank spacer line
-            print("You must select puzzle before you can configure puzzle options!")
+            print("\033[1m \033[6mYou must select puzzle before you can configure puzzle options!\033[0m")
 
 
 
