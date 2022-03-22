@@ -17,6 +17,7 @@ class UserInput():
         self.normal_column_width = True  # "normal" == True (default);  "narrow" == False
         self.single_line = True  # Default normal setting  (False = use double line around grids)
         self.puzzle_selected = False
+        self.show_brackets = True  # Default
 
     def start_menu(self):
         print()  # Spacing blank line
@@ -162,15 +163,23 @@ class UserInput():
                 print("'{}' is not a valid choice. Enter one of: {}".format(guess_value, possible_values_string))
         return guess_value
 
-    def determine_values_display_format(self):  # Can display as '4,5' or as '[4, 5]'
+    def determine_values_display_format(self, show_brackets):  # Can display as '4,5' or as '[4, 5]'
+        self.show_brackets = show_brackets
         valid_guess = False
+        if self.show_brackets == True:
+            current_setting = "Show brackets (option #1)"
+        else:
+            current_setting = "Do not show brackets (option #2)"
+         
         while not valid_guess:
             print()  # Blank spacer line
+            print("Current format is set to: {}".format(current_setting))
             print("There are two formats to display the available values inside a grid spot:")
             print("1. '[a, b, c]' (the default) or")
             print("2. 'a,b,c' which looks better and is shorter")
-            reply = input("Which format do you want: 1 or 2? ")
-            if reply == "1" or reply == "2":
+            print("3. Exit and leave as is (Currently set to: {})".format(current_setting))
+            reply = input("Enter your choice: 1 or 2 or 3? ")
+            if reply == "1" or reply == "2" or reply == "3":
                 valid_guess = True  # Exit while loop when get valid user input
             else:
                 print()  # Blank line as spacer
@@ -451,10 +460,11 @@ class Spot():  #
         return con3
 
 class Puzzle():
-    def __init__(self, initial_values, width, single_line):
+    def __init__(self, initial_values, width, single_line, show_brackets):
         self.initial_values = initial_values
         self.normal_column_width = width  # set in UserInput.start_menu
         self.use_single_line = single_line  # set in UserInput.
+        self.show_list_brackets = show_brackets  # set in UserInput.
         self.num_spots = len(self.initial_values)  # Handle both 9x9 or 16x16 puzzle
         self.full_side = int(self.num_spots ** 0.5)  # Handle both 9x9 or 16x16 puzzle
         self.part_side = int(self.num_spots ** 0.25)  # Handle both 9x9 or 16x16 puzzle
@@ -466,7 +476,7 @@ class Puzzle():
         self.normal_divider_line = "+--+--+--+--+--+--+--+--+--+"  # Initialize value
         self.narrow_divider_double_line = "++===+===+===++"  # Initialize value
         self.normal_divider_double_line = "++=====+=====+=====++"  # Initialize value
-        self.show_list_brackets = True  # Default display values as '[4, 5]'
+#        self.show_list_brackets = True  # Default display values as '[4, 5]'
         self.solved_spots = -1  # Initialize to invalid value
         self.unsolved_spots = -1  # Initialize to invalid value
         self.unsolved_combinations_count = -1  # Initialize to invalid value
@@ -1023,7 +1033,7 @@ class Puzzle():
         elif self.reply == "2":
             self.show_list_brackets = False  # Default display values as '4,5,6'
         else:
-            pass
+            pass  # Leave as is if reply == 3
 
     def backup_text(self, file):  # Backup puzzle in Text format to file location
         self.file = file
@@ -1074,11 +1084,13 @@ def main():
                     chosen_puzzle = ui.puzzle_menu()
                     width = ui.normal_column_width
                     single_line = ui.single_line
-                    p = Puzzle(chosen_puzzle, width, single_line)
+                    show_brackets = ui.show_brackets
+                    p = Puzzle(chosen_puzzle, width, single_line, show_brackets)
                 elif entry == "2" or entry == "3":  # Restore from file
                     ui.puzzle_selected = True
                     width = ui.normal_column_width
                     single_line = ui.single_line
+                    show_brackets = ui.show_brackets
                     file = ui.restore_menu(entry) 
 
                     # Determine if restoring text or CSV format data file
@@ -1087,7 +1099,7 @@ def main():
                     else:  # (Entry = 3: restoring from CSV file)
                         restored_puzzle = ui.restore_csv_data(file)
                     
-                    p = Puzzle(restored_puzzle, width, single_line)
+                    p = Puzzle(restored_puzzle, width, single_line, show_brackets)
 
                     for j in range(p.num_spots):  # Must correct 'known' setting for unknown spots/lists
                         if isinstance(p.puzz[j].get_con(), list):
@@ -1152,7 +1164,7 @@ def main():
                 
     
             if entry == "8":  # List possible values as 'a,b' without list brackets or spaces
-                reply = ui.determine_values_display_format()  # Can display as '[4, 5]' or as '4,5'
+                reply = ui.determine_values_display_format(p.show_list_brackets)  # Can display as '[4, 5]' or as '4,5'
                 p.set_values_display_format(reply)
     
             if entry == "9":
