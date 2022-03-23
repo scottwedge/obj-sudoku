@@ -167,17 +167,17 @@ class UserInput():
         self.show_brackets = show_brackets
         valid_guess = False
         if self.show_brackets == True:
-            current_setting = "Show brackets (option #1)"
+            current_setting = "Show brackets"
         else:
-            current_setting = "Do not show brackets (option #2)"
+            current_setting = "Do not show brackets"
          
         while not valid_guess:
             print()  # Blank spacer line
-            print("Current format is set to: {}".format(current_setting))
+            print("Current format is set to: \033[1m{}\033[0m".format(current_setting))
             print("There are two formats to display the available values inside a grid spot:")
             print("1. '[a, b, c]' (the default) or")
             print("2. 'a,b,c' which looks better and is shorter")
-            print("3. Exit and leave as is (Currently set to: {})".format(current_setting))
+            print("3. Exit and leave; currently set to: {}".format(current_setting))
             reply = input("Enter your choice: 1 or 2 or 3? ")
             if reply == "1" or reply == "2" or reply == "3":
                 valid_guess = True  # Exit while loop when get valid user input
@@ -195,7 +195,7 @@ class UserInput():
             else:
                 width = "narrow"
             print()  # Blank line spacer
-            print("Current column width is: {}.".format(width)) 
+            print("Current column width is: \033[1m{}.\033[0m".format(width)) 
             print("Configure the puzzle column width to be:")
             print("1. normal (default) width or")
             print("2. narrow width or")
